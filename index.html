@@ -143,7 +143,7 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 /* ---------- fondos «tecnológicos» ---------- */
 .tec{position:relative;isolation:isolate;overflow:hidden;padding-block:clamp(72px,11vh,130px)}
 .tec canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
-#capturas .cabecera{text-shadow:0 0 16px rgba(10,6,20,.9),0 2px 6px rgba(10,6,20,.75)}
+#arte .cabecera{text-shadow:0 0 16px rgba(10,6,20,.9),0 2px 6px rgba(10,6,20,.75)}
 .tec::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg),transparent 18%,transparent 82%,var(--bg))}
 /* la sección de antes es negra pura: la malla de los modos nace del negro poco a poco, sin corte */
 #modos::after{background:linear-gradient(to bottom,#000 0,#000 4%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.45) 24%,transparent 40%,transparent 82%,var(--bg))}
@@ -196,6 +196,23 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 footer a{color:var(--mut);user-select:all}
 footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));color:var(--mut);font-size:14px;text-align:center}
 
+.contador{text-align:center;margin-top:18px;font:400 14px/1 Audiowide,sans-serif;letter-spacing:2px;color:var(--mut)}
+.contador b{color:var(--sun);font-weight:400}
+.flechas{display:flex;justify-content:center;gap:12px;margin-top:26px}
+.flechas button{all:unset;cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--fg);font:400 18px/1 Inter,sans-serif;background:rgba(10,6,20,.6);transition:border-color .2s,background .2s}
+.flechas button:hover{border-color:var(--sun);background:rgba(255,194,26,.12)}
+.flechas button:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+/* ---------- capturas: cinta curva que pasa sin fin ---------- */
+#capturas{padding-block:clamp(64px,10vh,120px);background:#000;overflow:hidden;text-align:center}
+#capturas .cabecera{margin-inline:auto;margin-bottom:20px}
+.cinta{position:relative;height:clamp(230px,36vw,470px);perspective:1100px;perspective-origin:50% 50%;cursor:grab;touch-action:pan-y;user-select:none;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
+.cinta.agarrada{cursor:grabbing}
+.cinta figure{position:absolute;left:50%;top:50%;width:var(--w);aspect-ratio:16/9;margin:0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 30px 60px -25px #000;background:var(--card);will-change:transform,opacity;backface-visibility:hidden}
+.cinta img{width:100%;height:100%;object-fit:cover;pointer-events:none;display:block}
+#capturas .pie-cinta{color:var(--mut);max-width:520px;margin:30px auto 0;font-size:15px;padding-inline:20px}
+
 /* ---------- visor de capturas ---------- */
 #lb{position:fixed;inset:0;z-index:60;background:rgba(5,3,12,.94);display:grid;place-items:center;padding:20px;cursor:zoom-out}
 #lb[hidden]{display:none}
@@ -221,6 +238,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
       <li><a href="#multijugador"><span class="lang-es">Multijugador</span><span class="lang-en">Multiplayer</span></a></li>
       <li><a href="#poderes"><span class="lang-es">Poderes</span><span class="lang-en">Powers</span></a></li>
       <li><a href="#modos"><span class="lang-es">Modos</span><span class="lang-en">Modes</span></a></li>
+      <li><a href="#arte"><span class="lang-es">Arte</span><span class="lang-en">Art</span></a></li>
       <li><a href="#capturas"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></a></li>
     </ul>
     <div class="lang" role="group" aria-label="Idioma / Language">
@@ -369,18 +387,31 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     </div>
   </section>
 
-  <!-- ====== CAPTURAS: baraja sobre losas de vidrio ====== -->
-  <section class="tec" id="capturas">
+  <!-- ====== DIRECCIÓN DE ARTE: baraja con las imágenes preferidas de José, en orden aleatorio ====== -->
+  <section class="tec" id="arte">
     <canvas id="rejilla" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="cabecera">
+        <div class="kicker"><span class="lang-es">Dirección de arte</span><span class="lang-en">Art direction</span></div>
+        <h2><span class="lang-es">Así se ve la calle</span><span class="lang-en">This is how the street looks</span></h2>
+        <p><span class="lang-es">Ilustraciones del mundo del juego: los protagonistas, los enemigos y los sitios donde se lía. Arrastra o toca una para verla grande.</span><span class="lang-en">Artwork from the game's world: the heroes, the enemies and the places where it all kicks off. Drag, or tap one to see it full size.</span></p>
+      </div>
+      <div class="baraja" id="baraja" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Dirección de arte"></div>
+      <div class="flechas"><button type="button" id="arteAnt" aria-label="Anterior">&#8592;</button><button type="button" id="arteSig" aria-label="Siguiente">&#8594;</button></div>
+      <div class="contador" id="contador" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ====== CAPTURAS: cinta curva que pasa sin fin ====== -->
+  <section id="capturas">
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></div>
         <h2><span class="lang-es">El juego en marcha</span><span class="lang-en">The game in motion</span></h2>
-        <p><span class="lang-es">Arrastra, usa las flechas o toca una captura para verla grande.</span><span class="lang-en">Drag, use the arrow keys or tap a screenshot to see it full size.</span></p>
       </div>
-      <div class="baraja" id="baraja" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Capturas del juego"></div>
-      <div class="puntitos" id="puntitos"></div>
     </div>
+    <div class="cinta" id="cinta" role="group" aria-label="Capturas del juego"></div>
+    <p class="pie-cinta"><span class="lang-es">Arrastra para moverlas o toca una para verla grande.</span><span class="lang-en">Drag to move them, or tap one to see it full size.</span></p>
   </section>
 
   <!-- ====== TU PERSONAJE ====== -->
@@ -782,35 +813,37 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   }
   ondasEn(document.getElementById("ondas")); ondasEn(document.getElementById("ondas2"));
 
-  /* --- baraja de capturas --- */
-  var CAPS = ["cap-enemigos", "cap-playa", "cap-boda", "cap-feria", "cap-carcel", "cap-manifestacion", "cap-discoteca", "cap-club-nautico", "cap-tienda"];
-  var bar = document.getElementById("baraja"), pts = document.getElementById("puntitos"), act = 0, naipes = [], botones = [], reloj = null;
+  /* --- dirección de arte: baraja con las preferidas de José, en orden aleatorio cada vez --- */
+  function baraja_(v) { for (var i = v.length - 1; i > 0; i--) { var r = Math.floor(Math.random() * (i + 1)), t = v[i]; v[i] = v[r]; v[r] = t; } return v; }
+  var CAPS = baraja_(["01_bollu", "01_bollu_fali", "02_logan_dan", "02_pilasky", "03_logan_fali", "04_cote_bollu", "04_dan_cris", "05_cote", "07_fali_dan_cote", "09_bollu_fali_pilasky", "10_dan_logan_fali_cris", "10_todos", "11_bollu_dan_cris", "13_bollu_fali_logan_dan", "17_todos", "abuelo", "canis", "carcel", "competir", "coop", "deportivo", "doctor", "duquesa", "enemigos", "flow_banner_ancho", "heroes_1", "influencer", "jefe_negociado", "jefes", "leopardo", "motero", "parque", "patron", "plato", "playa", "poderes", "politicos", "radicales", "records", "rey", "rubio_pol", "supermercado", "tanque", "terian", "torrente", "ultra", "vagabundo"]);
+  var bar = document.getElementById("baraja"), cont = document.getElementById("contador"), act = 0, naipes = [], reloj = null;
   var lb = document.getElementById("lb"), lbImg = lb.querySelector("img");
   function coloca() {
     var n = CAPS.length;
     for (var j = 0; j < n; j++) {
       var d = j - act; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
       var el = naipes[j], a = Math.abs(d);
+      if (a <= 4) { var im = el.firstChild; if (!im.getAttribute("src")) im.src = im.dataset.src; }   // solo se cargan las cercanas
       el.style.setProperty("--d", d); el.style.setProperty("--a", Math.min(a, 3));
       el.style.zIndex = String(50 - a); el.style.opacity = a > 3 ? "0" : "1"; el.style.pointerEvents = a > 3 ? "none" : "";
+      el.style.visibility = a > 4 ? "hidden" : "";
       el.classList.toggle("act", d === 0); el.setAttribute("aria-hidden", d === 0 ? "false" : "true");
-      botones[j].setAttribute("aria-current", d === 0 ? "true" : "false");
     }
+    cont.innerHTML = "<b>" + (act + 1) + "</b> / " + n;
   }
   function ve(k) { act = (k + CAPS.length) % CAPS.length; coloca(); }
   function auto() { clearInterval(reloj); if (!quieto) reloj = setInterval(function () { if (lb.hidden && !document.hidden) ve(act + 1); }, 4200); }
   CAPS.forEach(function (cp, j) {
     var f = document.createElement("figure"); f.className = "naipe";
-    f.innerHTML = '<img src="img/' + cp + '.webp" alt="" loading="lazy" draggable="false">';
+    f.innerHTML = '<img data-src="img/arte/' + cp + '.webp" alt="" draggable="false">';
     f.addEventListener("click", function () {
       if (arrastro) return;
-      if (j === act) { lbImg.src = "img/" + cp + ".webp"; lb.hidden = false; } else { ve(j); auto(); }
+      if (j === act) { lbImg.src = "img/arte/" + cp + ".webp"; lb.hidden = false; } else { ve(j); auto(); }
     });
     bar.appendChild(f); naipes.push(f);
-    var p = document.createElement("button"); p.type = "button"; p.setAttribute("aria-label", "Captura " + (j + 1));
-    p.addEventListener("click", function () { ve(j); auto(); });
-    pts.appendChild(p); botones.push(p);
   });
+  document.getElementById("arteAnt").addEventListener("click", function () { ve(act - 1); auto(); });
+  document.getElementById("arteSig").addEventListener("click", function () { ve(act + 1); auto(); });
   var x0 = null, arrastro = false;
   bar.addEventListener("pointerdown", function (e) { x0 = e.clientX; arrastro = false; });
   window.addEventListener("pointerup", function (e) {
@@ -825,6 +858,52 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   function cerrar() { lb.hidden = true; lbImg.removeAttribute("src"); }
   lb.addEventListener("click", cerrar);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) cerrar(); });
+
+  /* --- capturas: cinta curva (idea de «Tilted Grid Hero» de 21st.dev, hecha a mano): pasan sin fin; en el centro
+     se ven planas y en los bordes se doblan hacia ti y se desvanecen. Orden aleatorio cada vez. --- */
+  (function () {
+    var cinta = document.getElementById("cinta");
+    var FOTOS = baraja_(["cap01", "cap02", "cap03", "cap04", "cap05", "cap06", "cap07", "cap08", "cap09", "cap10", "cap11", "cap12"]);
+    var agarre = false, xa = 0, movido = false;
+    var figs = FOTOS.map(function (c) {
+      var f = document.createElement("figure");
+      f.innerHTML = '<img src="img/capturas/' + c + '.webp" alt="" loading="lazy" draggable="false">';
+      f.addEventListener("click", function () { if (!movido) { lbImg.src = "img/capturas/" + c + ".webp"; lb.hidden = false; } });
+      cinta.appendChild(f); return f;
+    });
+    var off = 0, vel = quieto ? 0 : 38, w = 0, paso = 0, total = 0, media = 0, visible = false, t0 = 0, parado = false;
+    function medir() {
+      var ancho = cinta.clientWidth;
+      w = Math.min(460, Math.max(220, ancho * (ancho < 700 ? 0.6 : 0.32)));
+      paso = w + Math.max(14, w * 0.06); total = paso * figs.length; media = ancho / 2;
+      cinta.style.setProperty("--w", w + "px");
+    }
+    function pinta() {
+      for (var i = 0; i < figs.length; i++) {
+        var x = ((i * paso + off) % total + total) % total; if (x > total / 2) x -= total;
+        var p = x / media, a = Math.min(Math.abs(p), 1.4), sg = p < 0 ? -1 : 1;
+        var giro = -sg * Math.min(a * 58, 62), z = a * a * 240;
+        var op = a < 0.85 ? 1 : Math.max(0, 1 - (a - 0.85) / 0.5);
+        figs[i].style.transform = "translate(-50%,-50%) translateX(" + x.toFixed(1) + "px) translateZ(" + z.toFixed(1) + "px) rotateY(" + giro.toFixed(2) + "deg)";
+        figs[i].style.opacity = op.toFixed(3); figs[i].style.zIndex = String(100 - Math.round(a * 50));
+        figs[i].style.visibility = op <= 0 ? "hidden" : "";
+      }
+    }
+    function bucle(t) {
+      if (!visible) { t0 = 0; return; }
+      var dt = t0 ? Math.min(0.05, (t - t0) / 1000) : 0; t0 = t;
+      if (!parado && !agarre && !document.hidden && lb.hidden) off -= vel * dt;
+      pinta(); requestAnimationFrame(bucle);
+    }
+    medir(); pinta();
+    window.addEventListener("resize", function () { medir(); pinta(); });
+    new IntersectionObserver(function (es) { var v = es[0].isIntersecting; if (v && !visible) { visible = true; requestAnimationFrame(bucle); } visible = v; }).observe(cinta);
+    cinta.addEventListener("mouseenter", function () { parado = true; });
+    cinta.addEventListener("mouseleave", function () { parado = false; });
+    cinta.addEventListener("pointerdown", function (e) { agarre = true; movido = false; xa = e.clientX; cinta.classList.add("agarrada"); });
+    window.addEventListener("pointermove", function (e) { if (!agarre) return; var dx = e.clientX - xa; if (Math.abs(dx) > 4) movido = true; off += dx; xa = e.clientX; if (!visible) pinta(); });
+    window.addEventListener("pointerup", function () { if (!agarre) return; agarre = false; cinta.classList.remove("agarrada"); setTimeout(function () { movido = false; }, 60); });
+  })();
 
   document.getElementById("year").textContent = new Date().getFullYear();
 })();
