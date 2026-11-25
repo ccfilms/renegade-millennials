@@ -94,14 +94,16 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 .hero .fondo{position:absolute;inset:0;z-index:-2;display:flex;justify-content:flex-end;align-items:center}
 .hero .fondo img{height:min(100%,62vw);width:auto;max-width:none;object-fit:contain;animation:acerca 2.2s cubic-bezier(.2,.7,.2,1) both;transform-origin:80% 50%}
 @keyframes acerca{from{transform:scale(1.08);opacity:0}to{transform:scale(1);opacity:1}}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,#000,transparent 14%),linear-gradient(to right,#000 22%,transparent 46%)}
+.hero>canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-3}
+.hero .fondo img{-webkit-mask-image:linear-gradient(to right,transparent 41%,#000 50%);mask-image:linear-gradient(to right,transparent 41%,#000 50%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,#000,transparent 14%),linear-gradient(to right,rgba(0,0,0,.5),transparent 46%)}
 .hero .wrap{padding-block:110px clamp(40px,8vh,90px)}
 .hero .wrap>*{max-width:min(520px,35vw)}
 .hero .logo{width:min(520px,35vw)}
 @media(max-width:900px){
   .hero{display:block;min-height:0}
   .hero .fondo{position:relative;height:100vw;overflow:hidden;margin-top:56px;justify-content:flex-start}
-  .hero .fondo img{height:100%;width:auto;margin-left:-81.5vw;transform-origin:73% 50%}
+  .hero .fondo img{height:100%;width:auto;margin-left:-81.5vw;transform-origin:73% 50%;-webkit-mask-image:none;mask-image:none}
   .hero::before{display:none}
   .hero .wrap{padding-block:6px 50px}
   .hero .wrap>*{max-width:100%}
@@ -225,6 +227,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   <!-- ====== PORTADA ====== -->
   <section class="hero">
+    <canvas id="ondas2" aria-hidden="true"></canvas>
     <div class="fondo"><img src="img/flow/hero.jpg" alt="Cuatro de los protagonistas de Renegade Millennials" fetchpriority="high" width="2752" height="1536"></div>
     <div class="wrap">
       <h1 class="sr">Renegade Millennials</h1>
@@ -265,10 +268,9 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     <div class="wrap"><div class="texto">
       <div class="kicker"><span class="lang-es">A quién le pegas</span><span class="lang-en">Who you get to punch</span></div>
       <h2><span class="lang-es">Reparte a quien le tienes coraje</span><span class="lang-en">Hit the people who get on your nerves</span></h2>
-      <p class="lang-es">Fachas, perroflautas, nazis, radicales de todos los colores, pijos, gurús del cripto, tertulianos… Todos los que hacen del mundo un sitio peor están aquí, y por fin puedes decirles lo que piensas. Con los puños. Sin bandos: aquí cobra todo el mundo.</p>
-      <p class="lang-en">Far-right thugs, crusties, neo-Nazis, radicals of every colour, posh kids, crypto gurus, TV pundits… Everyone who makes the world a worse place is here, and at last you can tell them what you think. With your fists. No sides taken: everybody gets it.</p>
+      <p class="lang-es">Fachas, perroflautas, ocupas, criptobros, gymbros, tertulianos, skinheads, feminazis… Todos los que hacen del mundo un sitio peor están aquí, y por fin puedes decirles lo que piensas. Con los puños. Sin bandos: aquí cobra todo el mundo.</p>
+      <p class="lang-en">Far-right thugs, crusties, squatters, crypto bros, gym bros, TV pundits, skinheads, feminazis… Everyone who makes the world a worse place is here, and at last you can tell them what you think. With your fists. No sides taken: everybody gets it.</p>
       <ul class="puntos">
-        <li><span class="lang-es">Bandas enteras con sus líderes y sus jefes</span><span class="lang-en">Whole gangs with their leaders and bosses</span></li>
         <li><span class="lang-es">Cada enemigo con sus frases, sus manías y sus trucos</span><span class="lang-en">Every enemy has their own lines, quirks and tricks</span></li>
       </ul>
     </div>
@@ -339,7 +341,6 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   <!-- ====== MODOS: tarjetas apiladas sobre una rejilla de luz ====== -->
   <section class="tec" id="modos">
-    <canvas id="vidrio" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Modos de juego</span><span class="lang-en">Game modes</span></div>
@@ -390,7 +391,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   </section>
 </main>
 
-<footer><div class="wrap">© <span id="year"></span> José Camacho · Renegade Millennials<br><span class="lang-es">Un juego creado de principio a fin por un solo desarrollador: José Camacho.</span><span class="lang-en">A game made from start to finish by a solo developer: José Camacho.</span></div></footer>
+<footer><div class="wrap">© <span id="year"></span> José Camacho</div></footer>
 
 <div id="lb" hidden><img alt=""></div>
 
@@ -657,8 +658,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   /* --- #consiguelo · HeroWave: campo de barras inclinadas cuya altura rueda en olas lentas (ciclo de 55 s),
          con bloom suave y grano; las barras cercanas al puntero se encienden al moverlo.
          Shader propio que reproduce el aspecto del fondo del componente «AI Hero Input» (21st.dev, @socolled). --- */
-  (function () {
-    var cv = document.getElementById("ondas"); if (!cv) return;
+  function ondasEn(cv) {
+    if (!cv) return;
     /* ola: [segundo, altura, velocidad de fase, longitud de onda] */
     var OLA1 = [[0, 10, 0, 0.5], [4, 300, 1, 0.5], [6, 300, 4, 4.7], [8, 225, 4, 4.7], [10, 500, 1, 4.7], [14, 225, 3, 4.7], [22, 100, 6, 4.7], [28, 0, 0.9, 0.5], [30, 128, 0.9, 0.5], [32, 190, 1.4, 0.5], [39, 500, 4, 4.7], [42, 400, 2.8, 4.7], [44, 330, 2.6, 4.7], [48, 190, 5.4, 0.5], [52, 32, 0.1, 0.5], [55, 10, 0, 0.5]];
     var OLA2 = [[0, 0, 0, 0.5], [9, 0, 0, 0.5], [10, 400, 1, 0.5], [13, 300, 4, 4.7], [24, 96, 2, 0.5], [28, 0, 0.9, 0.5], [30, 142, 0.9, 0.5], [36, 374, 4, 4.7], [40, 300, 2.3, 4.7], [44, 245, 2, 4.7], [48, 141, 5.1, 0.5], [52, 24, 0.08, 0.5], [55, 8, 0, 0.5]];
@@ -754,7 +755,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, n, 1, gl.LUMINANCE, gl.UNSIGNED_BYTE, bytes.subarray(0, n));
       }
     });
-  })();
+  }
+  ondasEn(document.getElementById("ondas")); ondasEn(document.getElementById("ondas2"));
 
   /* --- baraja de capturas --- */
   var CAPS = ["cap-enemigos", "cap-playa", "cap-boda", "cap-feria", "cap-carcel", "cap-manifestacion", "cap-discoteca", "cap-club-nautico", "cap-tienda"];
