@@ -191,9 +191,10 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 .tuyo .plazas{display:inline-block;font:400 clamp(14px,2vw,18px)/1.2 Audiowide,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#1a0f00;background:linear-gradient(100deg,var(--sun),var(--fire) 70%,var(--hot));padding:10px 18px;border-radius:999px;box-shadow:0 8px 26px -8px rgba(255,106,26,.9)}
 .tuyo h2{font-size:clamp(26px,3.8vw,44px);margin:22px 0 12px}
 .tuyo p{color:var(--mut);max-width:560px;margin-inline:auto}
+.tuyo .contacto{display:inline-flex;margin-top:24px}
 .tuyo .correo{display:inline-block;margin-top:22px;font:600 clamp(16px,2.6vw,22px)/1.3 Inter,sans-serif;color:var(--ice);text-decoration:underline;text-underline-offset:5px;overflow-wrap:anywhere;user-select:all}
 .tuyo .correo:focus-visible{outline:2px solid var(--ice);outline-offset:4px}
-footer a{color:var(--mut);user-select:all}
+footer a{color:var(--mut)}
 footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));color:var(--mut);font-size:14px;text-align:center}
 
 .contador{text-align:center;margin-top:18px;font:400 14px/1 Audiowide,sans-serif;letter-spacing:2px;color:var(--mut)}
@@ -205,7 +206,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 /* ---------- capturas: cinta curva que pasa sin fin ---------- */
 #capturas{padding-block:clamp(64px,10vh,120px);background:#000;overflow:hidden;text-align:center}
 #capturas .cabecera{margin-inline:auto;margin-bottom:20px}
-.cinta{position:relative;height:clamp(230px,36vw,470px);perspective:1100px;perspective-origin:50% 50%;cursor:grab;touch-action:pan-y;user-select:none;
+.cinta{position:relative;height:clamp(150px,22vw,290px);perspective:1100px;perspective-origin:50% 50%;cursor:grab;touch-action:pan-y;user-select:none;
   -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
 .cinta.agarrada{cursor:grabbing}
 .cinta figure{position:absolute;left:50%;top:50%;width:var(--w);aspect-ratio:16/9;margin:0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);
@@ -392,9 +393,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     <canvas id="rejilla" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
-        <div class="kicker"><span class="lang-es">Dirección de arte</span><span class="lang-en">Art direction</span></div>
-        <h2><span class="lang-es">Así se ve la calle</span><span class="lang-en">This is how the street looks</span></h2>
-        <p><span class="lang-es">Ilustraciones del mundo del juego: los protagonistas, los enemigos y los sitios donde se lía. Arrastra o toca una para verla grande.</span><span class="lang-en">Artwork from the game's world: the heroes, the enemies and the places where it all kicks off. Drag, or tap one to see it full size.</span></p>
+        <h2><span class="lang-es">Dirección de arte</span><span class="lang-en">Art direction</span></h2>
       </div>
       <div class="baraja" id="baraja" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Dirección de arte"></div>
       <div class="flechas"><button type="button" id="arteAnt" aria-label="Anterior">&#8592;</button><button type="button" id="arteSig" aria-label="Siguiente">&#8594;</button></div>
@@ -406,12 +405,10 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   <section id="capturas">
     <div class="wrap">
       <div class="cabecera">
-        <div class="kicker"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></div>
-        <h2><span class="lang-es">El juego en marcha</span><span class="lang-en">The game in motion</span></h2>
+        <h2><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></h2>
       </div>
     </div>
     <div class="cinta" id="cinta" role="group" aria-label="Capturas del juego"></div>
-    <p class="pie-cinta"><span class="lang-es">Arrastra para moverlas o toca una para verla grande.</span><span class="lang-en">Drag to move them, or tap one to see it full size.</span></p>
   </section>
 
   <!-- ====== TU PERSONAJE ====== -->
@@ -421,7 +418,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
       <h2><span class="lang-es">¿Quieres tu personaje personalizado?</span><span class="lang-en">Want your own custom character?</span></h2>
       <p class="lang-es">Tu cara y tu nombre dentro del juego. Escríbenos y te contamos cómo.</p>
       <p class="lang-en">Your face and your name inside the game. Write to us and we will tell you how.</p>
-      <a class="correo" data-correo href="mailto:renegademillennialsgame@gmail.com">renegademillennialsgame@gmail.com</a>
+      <a class="comprar contacto" data-correo href="mailto:renegademillennialsgame@gmail.com"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a>
     </div></div>
   </section>
 
@@ -429,9 +426,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   <section class="tec cierre" id="consiguelo">
     <canvas id="ondas" aria-hidden="true"></canvas>
     <div class="wrap">
-      <img class="logo" src="img/flow/logo.png" alt="Renegade Millennials" data-logo>
-      <div class="logo-txt" hidden aria-hidden="true">RENEGADE<br>MILLENNIALS</div>
-      <h2><span class="lang-es">¿Bajas al barrio?</span><span class="lang-en">Coming down to the block?</span></h2>
+      <h2><span class="lang-es">La sociedad necesita tus sueños</span><span class="lang-en">Society needs your dreams</span></h2>
       <p class="sub" id="textoCompra"><span class="lang-es">Para Windows, con teclado o mando. Muy pronto a la venta: entra en el Discord y serás de los primeros en enterarte.</span><span class="lang-en">For Windows, keyboard or controller. On sale very soon: join the Discord and be among the first to know.</span></p>
       <div class="acciones">
         <a class="comprar" data-compra href="#consiguelo"><span class="lang-es">Cómpralo ahora</span><span class="lang-en">Buy it now</span></a>
@@ -441,7 +436,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   </section>
 </main>
 
-<footer><div class="wrap">© <span id="year"></span> José Camacho · <span class="lang-es">Contacto:</span><span class="lang-en">Contact:</span> <a data-correo href="mailto:renegademillennialsgame@gmail.com">renegademillennialsgame@gmail.com</a></div></footer>
+<footer><div class="wrap">© <span id="year"></span> José Camacho · <a data-correo href="mailto:renegademillennialsgame@gmail.com"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></div></footer>
 
 <div id="lb" hidden><img alt=""></div>
 
@@ -495,7 +490,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   /* --- correo de contacto --- */
   var correos = document.querySelectorAll("[data-correo]");
-  for (i = 0; i < correos.length; i++) if (CONFIG.contactEmail) { correos[i].href = "mailto:" + CONFIG.contactEmail; correos[i].textContent = CONFIG.contactEmail; }
+  for (i = 0; i < correos.length; i++) if (CONFIG.contactEmail) { correos[i].href = "mailto:" + CONFIG.contactEmail; }
 
   /* --- redes: salen las tres; la que aún no tiene enlace no lleva a ningún sitio hasta que se rellene arriba --- */
   var redes = [["discord", CONFIG.discordUrl, "Discord"], ["instagram", CONFIG.instagramUrl, "Instagram"], ["steam", CONFIG.steamUrl, "Steam"]];
@@ -730,6 +725,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     fondoGL(cv, [
       "uniform vec2 uRes; uniform float uTime; uniform float uDpr; uniform float uBase; uniform float uN; uniform float uX0; uniform float uPitch; uniform float uGm; uniform float uTan;",
       "uniform vec3 uW1; uniform vec3 uW2; uniform sampler2D uGl;",
+      "vec3 pal(float t){ return t < 0.5 ? mix(vec3(1.0, 0.80, 0.10), vec3(1.0, 0.42, 0.05), t * 2.0) : mix(vec3(1.0, 0.42, 0.05), vec3(1.0, 0.10, 0.16), t * 2.0 - 1.0); }",
       "float alt(vec3 w, float t){ return max(20.0, (sin(w.z + t * w.y) * 0.5 + 0.6) * w.x * uGm); }",
       "float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); q += dot(q, q.yxz + 19.19); return fract((q.x + q.y) * q.z); }",
       /* cuánto cubre una barra en este punto: ancha casi desde la base y afilada en la punta */
@@ -752,23 +748,23 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
       "      float dx = xc - (uX0 + i * uPitch);",
       "      float t = uN > 1.0 ? i / (uN - 1.0) : 0.0;",
       "      float gl = texture2D(uGl, vec2((i + 0.5) / uN, 0.5)).r * 40.0;",
-      "      vec3 bc = vec3(0.0, 0.091, 1.0) + vec3(0.12, 0.24, 0.74) * (0.05 + gl * 0.9);",
+      "      vec3 bc = pal(t) * (0.85 + 0.6 * (0.05 + gl * 0.9));",
       "      float a = (cobertura(alt(uW1, t), yy, dx) + cobertura(alt(uW2, t), yy, dx)) * 0.35;",
       "      col += bc * a;",
       "    }",
       "  }",
-      /* el bloom: un resplandor azul sobre la silueta de las olas */
+      /* el bloom: un resplandor amarillo, naranja y rojo sobre la silueta de las olas */
       "  float t0 = clamp((P.x - uX0) / span, 0.0, 1.0);",
       "  float H0 = max(alt(uW1, t0), alt(uW2, t0));",
       "  float t1 = clamp((P.x - H0 * uTan - uX0) / span, 0.0, 1.0);",
       "  float H = max(alt(uW1, t1), alt(uW2, t1));",
       "  float d = max(yy - H, 0.0);",
       "  float suelo = smoothstep(-30.0, 8.0, yy);",
-      "  col += vec3(0.05, 0.07, 0.40) * exp(-d / 55.0) * 0.34 * suelo + vec3(0.02, 0.03, 0.20) * exp(-d / 230.0) * 0.30 * suelo;",
+      "  col += pal(t0) * 0.40 * exp(-d / 55.0) * 0.34 * suelo + pal(t0) * 0.20 * exp(-d / 230.0) * 0.30 * suelo;",
       /* el bloom también rellena los huecos entre barras dentro de cada colina */
       "  float tc = clamp((P.x - yy * uTan - uX0) / span, 0.0, 1.0);",
       "  float relleno = smoothstep(alt(uW1, tc) + 10.0, alt(uW1, tc) - 25.0, yy) + smoothstep(alt(uW2, tc) + 10.0, alt(uW2, tc) - 25.0, yy);",
-      "  col += vec3(0.06, 0.08, 1.0) * relleno * smoothstep(0.0, 15.0, yy) * 0.2;",
+      "  col += pal(tc) * relleno * smoothstep(0.0, 15.0, yy) * 0.2;",
       /* grano de película */
       "  float g = hash(gl_FragCoord.xy + vec2(37.0, 17.0) * fract(uTime * 0.07)) * 2.0 - 1.0;",
       "  col += g * 0.08;",
@@ -874,7 +870,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     var off = 0, vel = quieto ? 0 : 38, w = 0, paso = 0, total = 0, media = 0, visible = false, t0 = 0, parado = false;
     function medir() {
       var ancho = cinta.clientWidth;
-      w = Math.min(460, Math.max(220, ancho * (ancho < 700 ? 0.6 : 0.32)));
+      w = Math.min(330, Math.max(170, ancho * (ancho < 700 ? 0.5 : 0.22)));
       paso = w + Math.max(14, w * 0.06); total = paso * figs.length; media = ancho / 2;
       cinta.style.setProperty("--w", w + "px");
     }
