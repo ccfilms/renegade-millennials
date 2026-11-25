@@ -148,7 +148,7 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 .tec::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg),transparent 18%,transparent 82%,var(--bg))}
 /* la sección de antes es negra pura: la malla de los modos nace del negro poco a poco, sin corte */
 #arte::after{background:linear-gradient(to bottom,var(--bg),transparent 16%,transparent 55%,rgba(0,0,0,.75) 80%,#000 100%)}
-#consiguelo::after{background:linear-gradient(to bottom,#000 0,#000 6%,rgba(0,0,0,.8) 20%,rgba(0,0,0,.45) 38%,transparent 60%,transparent 85%,var(--bg))}
+#consiguelo::after{background:linear-gradient(to bottom,#000 0,#000 6%,rgba(0,0,0,.8) 20%,rgba(0,0,0,.45) 38%,transparent 60%,transparent 85%,#000)}
 #modos::after{background:linear-gradient(to bottom,#000 0,#000 4%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.45) 24%,transparent 40%,transparent 82%,var(--bg))}
 .cabecera{max-width:720px;margin-bottom:44px}
 .cabecera h2{font-size:clamp(28px,3.8vw,46px)}
@@ -207,7 +207,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 .flechas button:hover{border-color:var(--sun);background:rgba(255,194,26,.12)}
 .flechas button:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
 /* ---------- capturas: cinta curva que pasa sin fin ---------- */
-#capturas{padding-block:clamp(10px,2vh,24px) clamp(18px,3vh,36px);background:#000;overflow:hidden;text-align:center}
+#capturas{padding-block:clamp(20px,3vh,40px) clamp(28px,5vh,56px);background:#000;overflow:hidden;text-align:center}
 #capturas .cabecera{margin-inline:auto;margin-bottom:20px}
 .cinta{position:relative;height:clamp(150px,22vw,290px);perspective:1100px;perspective-origin:50% 50%;cursor:grab;touch-action:pan-y;user-select:none;
   -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
@@ -404,16 +404,6 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     </div>
   </section>
 
-  <!-- ====== CAPTURAS: cinta curva que pasa sin fin ====== -->
-  <section id="capturas">
-    <div class="wrap">
-      <div class="cabecera">
-        <h2><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></h2>
-      </div>
-    </div>
-    <div class="cinta" id="cinta" role="group" aria-label="Capturas del juego"></div>
-  </section>
-
   <!-- ====== TU PERSONAJE ====== -->
   <section class="tuyo" id="tu-personaje">
     <div class="wrap"><div class="caja">
@@ -437,6 +427,16 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
       </div>
     </div>
   </section>
+  <!-- ====== CAPTURAS: cinta curva que pasa sin fin ====== -->
+  <section id="capturas">
+    <div class="wrap">
+      <div class="cabecera">
+        <h2><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></h2>
+      </div>
+    </div>
+    <div class="cinta" id="cinta" role="group" aria-label="Capturas del juego"></div>
+  </section>
+
 </main>
 
 <footer><div class="wrap">© <span id="year"></span> José Camacho · <a data-correo href="mailto:renegademillennialsgame@gmail.com"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></div></footer>
