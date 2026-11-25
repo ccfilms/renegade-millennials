@@ -400,7 +400,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   "use strict";
   /* ===================== CONFIGURACIÓN =====================
      Rellena lo que tengas; lo que esté vacío no se muestra.
-     comprarUrl: la tienda donde se compra (itch.io o Steam). Vacío = el botón lleva al Discord. */
+     comprarUrl: la tienda donde se compra (itch.io o Steam). Vacío = el botón lleva a proximamente.html (igual que Instagram y Steam sin enlace). */
   var CONFIG = {
     comprarUrl: "",
     discordUrl: "https://discord.gg/g4Sj4rXXuJ",
@@ -431,12 +431,12 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   for (var i = 0; i < lbs.length; i++) lbs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang")); });
   setLang(start);
 
-  /* --- botón de compra: a la tienda si hay enlace; si no, al Discord --- */
+  /* --- botón de compra: a la tienda si hay enlace; si no, a la página «Próximamente» --- */
   var compras = document.querySelectorAll("[data-compra]");
   var destino = CONFIG.comprarUrl || CONFIG.steamUrl;
   for (i = 0; i < compras.length; i++) {
     if (destino) { compras[i].href = destino; compras[i].target = "_blank"; compras[i].rel = "noopener"; }
-    else if (compras[i].closest("#consiguelo") && CONFIG.discordUrl) { compras[i].href = CONFIG.discordUrl; compras[i].target = "_blank"; compras[i].rel = "noopener"; }
+    else { compras[i].href = "proximamente.html"; }
   }
   if (destino) {
     document.getElementById("textoCompra").innerHTML = '<span class="lang-es">Para Windows, con teclado o mando.</span><span class="lang-en">For Windows, keyboard or controller.</span>';
@@ -447,7 +447,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   var cajas = document.querySelectorAll("[data-redes]");
   for (i = 0; i < cajas.length; i++) for (var r = 0; r < redes.length; r++) {
     var a = document.createElement("a");
-    if (redes[r][1]) { a.href = redes[r][1]; a.target = "_blank"; a.rel = "noopener"; } else { a.href = "#"; a.addEventListener("click", function (e) { e.preventDefault(); }); }
+    if (redes[r][1]) { a.href = redes[r][1]; a.target = "_blank"; a.rel = "noopener"; } else { a.href = "proximamente.html"; }
     a.innerHTML = ICONOS[redes[r][0]] + "<span>" + redes[r][2] + "</span>";
     cajas[i].appendChild(a);
   }

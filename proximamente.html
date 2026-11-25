@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Próximamente — Renegade Millennials</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0614">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#0a0614;--card:#171028;--line:#2e2150;--fg:#f5f0ff;--mut:#b9aed6;--sun:#ffc21a;--fire:#ff6a1a;--hot:#ff2e63;--ice:#38d6ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;display:grid;place-items:center;background:radial-gradient(900px 520px at 50% 0,#1d1140,transparent 70%),var(--bg);color:var(--fg);font:400 17px/1.65 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding:28px 20px}
+body.es .lang-en,body.en .lang-es{display:none!important}
+main{width:min(620px,100%);text-align:center}
+.logo{width:min(380px,82%);margin:0 auto 26px;display:block}
+.kicker{font:400 13px/1 Audiowide,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--sun)}
+h1{font:400 clamp(38px,9vw,68px)/1.05 Audiowide,Inter,sans-serif;margin:14px 0 18px;background:linear-gradient(100deg,var(--sun),var(--fire) 60%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{margin:0 auto;max-width:480px;color:var(--mut)}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:400 16px/1 Audiowide,sans-serif;letter-spacing:.6px;text-decoration:none;padding:16px 26px;border-radius:12px;transition:transform .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+.btn.pri{color:#1a0f00;background:linear-gradient(100deg,var(--sun),var(--fire) 70%,var(--hot));box-shadow:0 10px 34px -10px rgba(255,106,26,.85),inset 0 1px 0 rgba(255,255,255,.45)}
+.btn.sec{color:var(--fg);border:1px solid var(--line);background:rgba(23,16,40,.6)}
+.btn.sec:hover{border-color:var(--ice)}
+.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lang{position:fixed;top:16px;right:16px;display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{font:600 12px/1 Inter,sans-serif;padding:8px 10px;border:0;background:transparent;color:var(--mut);cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--sun);color:#1a0f00}
+</style>
+</head>
+<body class="es">
+<div class="lang" role="group" aria-label="Idioma / Language">
+  <button type="button" data-lang="es" aria-pressed="true">ES</button>
+  <button type="button" data-lang="en" aria-pressed="false">EN</button>
+</div>
+<main>
+  <a href="./"><img class="logo" src="img/flow/logo.png" alt="Renegade Millennials"></a>
+  <div class="kicker"><span class="lang-es">Todavía no</span><span class="lang-en">Not yet</span></div>
+  <h1><span class="lang-es">Próximamente</span><span class="lang-en">Coming soon</span></h1>
+  <p class="lang-es">Esto aún no está abierto, pero falta poco. Mientras tanto, pásate por el Discord: ahí avisamos de todo antes que en ningún otro sitio.</p>
+  <p class="lang-en">This is not open yet, but it will be soon. Meanwhile, drop by the Discord: news lands there before anywhere else.</p>
+  <div class="acciones">
+    <a class="btn pri" href="https://discord.gg/g4Sj4rXXuJ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="lang-es">Entra al Discord</span><span class="lang-en">Join the Discord</span></a>
+    <a class="btn sec" href="./"><span class="lang-es">← Volver</span><span class="lang-en">← Back</span></a>
+  </div>
+</main>
+<script>
+(function () {
+  var saved = null;
+  try { saved = localStorage.getItem("trm-lang"); } catch (e) {}
+  function setLang(l) {
+    document.body.className = l; document.documentElement.lang = l;
+    document.title = (l === "es" ? "Próximamente" : "Coming soon") + " — Renegade Millennials";
+    var bs = document.querySelectorAll(".lang button");
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i].getAttribute("data-lang") === l ? "true" : "false");
+    try { localStorage.setItem("trm-lang", l); } catch (e) {}
+  }
+  setLang(saved || ((navigator.language || "es").toLowerCase().indexOf("es") === 0 ? "es" : "en"));
+  var bs = document.querySelectorAll(".lang button");
+  for (var i = 0; i < bs.length; i++) bs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang")); });
+})();
+</script>
+</body>
+</html>
