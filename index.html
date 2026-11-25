@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Renegade Millennials — brawler para 1 a 4 jugadores, local y en línea</title>
+<meta name="description" content="Renegade Millennials: un brawler para 1 a 4 jugadores, en el mismo PC o por internet. Un grupo de millennials hartos contra todos los radicales que hacen del mundo un sitio peor. Combos, poderes, récords y humor sin filtro.">
+<meta name="theme-color" content="#0a0614">
+<meta property="og:title" content="Renegade Millennials">
+<meta property="og:description" content="Brawler para 1 a 4 jugadores, en el mismo PC o por internet. El mundo se ha vuelto loco: toca arreglarlo a hostias.">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0a0614; --bg2:#120a22; --card:#171028; --line:#2e2150;
+  --fg:#f5f0ff; --mut:#b9aed6; --sun:#ffc21a; --fire:#ff6a1a; --hot:#ff2e63; --ice:#38d6ff;
+  --gut:max(20px,env(safe-area-inset-left,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:Audiowide,Inter,system-ui,sans-serif;font-weight:400;line-height:1.12;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--ice)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+body.es .lang-en,body.en .lang-es{display:none!important}
+.wrap{width:100%;max-width:1240px;margin-inline:auto;padding-inline:var(--gut)}
+
+/* ---------- cargador: cubo isométrico de puntos ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:opacity .5s ease,visibility .5s}
+#loader.fuera{opacity:0;visibility:hidden}
+.cubo{width:96px;height:96px;position:relative;transform-style:preserve-3d;transform:rotateX(-30deg) rotateY(45deg);animation:cubo-gira 4.5s cubic-bezier(.6,0,.4,1) infinite}
+.cubo i{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:9px;padding:6px}
+.cubo i b{border-radius:50%;background:var(--sun);opacity:.15;animation:punto 1.5s ease-in-out infinite}
+.cubo i:nth-child(1){transform:translateZ(48px)}
+.cubo i:nth-child(2){transform:rotateY(90deg) translateZ(48px)}
+.cubo i:nth-child(2) b{background:var(--fire)}
+.cubo i:nth-child(3){transform:rotateX(90deg) translateZ(48px)}
+.cubo i:nth-child(3) b{background:var(--hot)}
+@keyframes punto{0%,100%{opacity:.12;transform:scale(.6)}45%{opacity:1;transform:scale(1)}}
+@keyframes cubo-gira{0%{transform:rotateX(-30deg) rotateY(45deg)}50%{transform:rotateX(-30deg) rotateY(135deg)}100%{transform:rotateX(-30deg) rotateY(225deg)}}
+
+/* ---------- barra superior ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:30;background:linear-gradient(to bottom,rgba(10,6,20,.92),rgba(10,6,20,.55) 70%,transparent);transition:background .3s}
+.nav.solida{background:rgba(10,6,20,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.nav .wrap{display:flex;align-items:center;gap:18px;min-height:60px}
+.brand{font-family:Audiowide,sans-serif;font-size:15px;letter-spacing:.8px;color:var(--fg);text-decoration:none;white-space:nowrap}
+.brand b{color:var(--sun);font-weight:400}
+.nav ul{display:flex;gap:20px;list-style:none;margin:0 0 0 auto;padding:0}
+.nav ul a{color:var(--mut);text-decoration:none;font-size:14.5px;font-weight:500}
+.nav ul a:hover,.nav ul a:focus-visible{color:var(--fg)}
+.lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
+.lang button{all:unset;cursor:pointer;padding:5px 9px;font:600 12.5px Inter,sans-serif;color:var(--mut)}
+.lang button[aria-pressed="true"]{background:var(--sun);color:#1a0f00}
+.lang button:focus-visible{outline:2px solid var(--ice);outline-offset:-2px}
+@media(max-width:980px){.nav ul{display:none}.lang{margin-left:auto}}
+@media(max-width:520px){.nav .wrap{gap:9px}.brand{font-size:11px;letter-spacing:.2px;min-width:0;overflow:hidden;text-overflow:ellipsis}.lang button{padding:5px 7px;font-size:11.5px}.comprar.mini{font-size:11.5px;padding:9px 11px}}
+@media(max-width:350px){.brand b{display:none}}
+@media(max-width:520px){.puntitos{gap:5px}.puntitos button{width:14px}.puntitos button[aria-current="true"]{width:26px}}
+
+/* ---------- botón de compra (el único botón de la página) ---------- */
+.comprar{display:inline-flex;align-items:center;gap:10px;font:400 17px/1 Audiowide,sans-serif;letter-spacing:.6px;text-decoration:none;color:#1a0f00;
+  background:linear-gradient(100deg,var(--sun),var(--fire) 70%,var(--hot));padding:17px 30px;border-radius:12px;border:0;cursor:pointer;
+  box-shadow:0 10px 34px -10px rgba(255,106,26,.85),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .2s cubic-bezier(.2,.9,.3,1.2),box-shadow .2s}
+.comprar:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 16px 44px -10px rgba(255,106,26,1),inset 0 1px 0 rgba(255,255,255,.55)}
+.comprar:active{transform:scale(.97)}
+.comprar:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+.comprar.mini{font-size:13px;padding:10px 16px;border-radius:9px;flex:none}
+.nota-compra{color:var(--mut);font-size:14.5px;margin-top:14px}
+
+/* ---------- redes ---------- */
+.redes{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.redes a{display:inline-flex;align-items:center;gap:8px;color:var(--fg);text-decoration:none;font-weight:600;font-size:14.5px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(23,16,40,.6);backdrop-filter:blur(6px);transition:border-color .2s,transform .2s}
+.redes a:hover{border-color:var(--ice);transform:translateY(-1px)}
+.redes a:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.redes svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.redes svg .lleno{fill:currentColor;stroke:none}
+.redes a[hidden]{display:none}
+
+/* ---------- portada ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;isolation:isolate;overflow:hidden;background:#000}
+.hero .fondo{position:absolute;inset:0;z-index:-2;display:flex;justify-content:flex-end;align-items:center}
+.hero .fondo img{height:min(100%,62vw);width:auto;max-width:none;object-fit:contain;animation:acerca 2.2s cubic-bezier(.2,.7,.2,1) both;transform-origin:80% 50%}
+@keyframes acerca{from{transform:scale(1.08);opacity:0}to{transform:scale(1);opacity:1}}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,#000,transparent 14%),linear-gradient(to right,#000 22%,transparent 46%)}
+.hero .wrap{padding-block:110px clamp(40px,8vh,90px)}
+.hero .wrap>*{max-width:min(520px,35vw)}
+.hero .logo{width:min(520px,35vw)}
+@media(max-width:900px){
+  .hero{display:block;min-height:0}
+  .hero .fondo{position:relative;height:78vw;overflow:hidden;margin-top:56px}
+  .hero .fondo img{height:100%;width:auto;margin-right:-4vw}
+  .hero::before{display:none}
+  .hero .wrap{padding-block:6px 50px}
+  .hero .wrap>*{max-width:100%}
+}
+.logo{width:min(560px,86vw);height:auto;margin-left:-8px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.7))}
+.logo-txt{font:400 clamp(30px,8.6vw,88px)/.95 Audiowide,sans-serif;letter-spacing:1px;background:linear-gradient(180deg,#fff3a8,var(--sun) 38%,var(--fire) 70%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 0 rgba(20,10,60,.9)) drop-shadow(0 14px 30px rgba(0,0,0,.7))}
+.tagline{font:400 clamp(20px,3vw,32px)/1.2 Audiowide,sans-serif;margin-top:18px;max-width:780px;text-wrap:balance}
+.lead{max-width:640px;margin-top:14px;color:#ddd4f3;font-size:clamp(16px,1.6vw,19px)}
+.hero .acciones{display:flex;flex-wrap:wrap;gap:18px 22px;align-items:center;margin-top:28px}
+.datos{display:flex;flex-wrap:wrap;gap:8px 22px;margin:26px 0 0;padding:0;list-style:none;color:var(--mut);font-size:15px}
+.datos b{color:var(--sun);font-family:Audiowide,sans-serif;font-weight:400;margin-right:5px}
+
+/* ---------- franjas: imagen grande a un lado y texto al otro, sobre negro (como la página de referencia) ---------- */
+.franja{position:relative;background:#000;padding-block:clamp(36px,7vh,96px);overflow:hidden}
+/* (las franjas son negras y van seguidas: sin banda de color entre una y otra) */
+.franja .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,9fr);gap:clamp(18px,3.4vw,56px);align-items:center;max-width:1560px}
+.franja.izq .wrap{grid-template-columns:minmax(0,9fr) minmax(0,5fr)}
+.franja.izq .arte{order:-1}
+.franja .arte{position:relative}
+.franja .arte img{width:100%;height:auto;display:block;opacity:0;transform:scale(.94);transition:transform 1.1s cubic-bezier(.2,.7,.2,1),opacity .9s}
+.franja.vista .arte img{transform:none;opacity:1}
+.texto{width:min(520px,100%);opacity:0;transform:translateY(34px);transition:opacity .8s ease .15s,transform .8s cubic-bezier(.2,.7,.2,1) .15s}
+.franja.vista .texto{opacity:1;transform:none}
+.kicker{font:600 12.5px Inter,sans-serif;letter-spacing:2.6px;text-transform:uppercase;color:var(--sun);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.kicker::before{content:"";width:34px;height:2px;background:linear-gradient(90deg,var(--sun),var(--hot))}
+.texto h2{font-size:clamp(28px,3.6vw,46px);letter-spacing:.4px}
+.texto p{margin-top:16px;color:#d6cdea}
+.puntos{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.puntos li{padding-left:22px;position:relative;color:var(--fg);font-size:16px}
+.puntos li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:2px;background:var(--fire);transform:rotate(45deg);box-shadow:0 0 12px var(--fire)}
+@media(max-width:900px){
+  .franja .wrap,.franja.izq .wrap{grid-template-columns:1fr;gap:8px}
+  .franja .arte{order:-1;margin-inline:calc(var(--gut) * -1)}
+  .texto{width:100%}
+}
+
+/* ---------- fondos «tecnológicos» ---------- */
+.tec{position:relative;isolation:isolate;overflow:hidden;padding-block:clamp(72px,11vh,130px)}
+.tec canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+#capturas .cabecera{text-shadow:0 0 16px rgba(10,6,20,.9),0 2px 6px rgba(10,6,20,.75)}
+.tec::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg),transparent 18%,transparent 82%,var(--bg))}
+/* la sección de antes es negra pura: la malla de los modos nace del negro poco a poco, sin corte */
+#modos::after{background:linear-gradient(to bottom,#000 0,#000 4%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.45) 24%,transparent 40%,transparent 82%,var(--bg))}
+.cabecera{max-width:720px;margin-bottom:44px}
+.cabecera h2{font-size:clamp(28px,3.8vw,46px)}
+.cabecera p{color:var(--mut);margin-top:14px}
+/* ---------- tarjetas apiladas (modos de juego) ---------- */
+.pilas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:120px 40px;padding:60px 0 90px}
+.pila{display:grid;grid-template-areas:"p";place-items:center}
+.tarj{grid-area:p;width:min(380px,100%);min-height:150px;padding:18px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(160deg,rgba(35,24,62,.92),rgba(16,10,30,.94));backdrop-filter:blur(8px);
+  transform:skewY(-8deg) translate(var(--tx,0),var(--ty,0));transition:transform .55s cubic-bezier(.2,.8,.2,1),filter .5s,border-color .4s,box-shadow .5s;
+  filter:grayscale(1) brightness(.62);box-shadow:0 24px 40px -22px rgba(0,0,0,.9);position:relative}
+.tarj:nth-child(1){--tx:-34px;--ty:-70px}
+.tarj:nth-child(2){--tx:14px;--ty:-6px}
+.tarj:nth-child(3){--tx:62px;--ty:58px;filter:none}
+.tarj:hover,.tarj:focus-within{filter:none;border-color:rgba(255,194,26,.6);transform:skewY(-8deg) translate(var(--tx),calc(var(--ty) - 38px));box-shadow:0 30px 60px -20px rgba(255,106,26,.45);z-index:5}
+.tarj h3{font-size:19px;display:flex;align-items:center;gap:10px;color:var(--sun)}
+.tarj h3::before{content:attr(data-n);font:400 12px Audiowide,sans-serif;color:#1a0f00;background:var(--sun);border-radius:7px;padding:5px 7px}
+.tarj p{margin-top:10px;color:#d6cdea;font-size:15px;line-height:1.5}
+@media(max-width:900px){.pilas{grid-template-columns:1fr;gap:14px;padding:0}.pila{display:grid;grid-template-areas:none;gap:14px;place-items:stretch}
+  .tarj{grid-area:auto;width:100%;transform:none!important;filter:none!important;min-height:0}}
+
+/* ---------- baraja de capturas ---------- */
+.baraja{position:relative;height:clamp(200px,34vw,400px);margin-top:10px;touch-action:pan-y;user-select:none;perspective:1600px}
+.naipe{position:absolute;left:50%;top:50%;width:min(620px,84vw);aspect-ratio:16/9;margin:0;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 34px 70px -28px #000;transform:translate(-50%,-50%) translateX(calc(var(--d)*17%)) scale(calc(1 - var(--a)*.13)) rotate(calc(var(--d)*3.2deg)) rotateY(calc(var(--d)*-9deg));
+  transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .6s,opacity .5s;filter:brightness(calc(1 - var(--a)*.3)) saturate(calc(1 - var(--a)*.25));cursor:pointer;background:var(--card);padding:0}
+.naipe img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.puntitos{display:flex;justify-content:center;gap:8px;margin-top:26px}
+.puntitos button{all:unset;cursor:pointer;width:26px;height:6px;border-radius:3px;background:var(--line);transition:background .3s,width .3s}
+.puntitos button[aria-current="true"]{background:var(--sun);width:44px}
+.puntitos button:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+
+/* ---------- cierre y pie ---------- */
+.cierre{text-align:center}
+.cierre::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 62% 58% at 50% 52%,rgba(10,6,20,.78),rgba(10,6,20,.35) 60%,transparent 85%)}
+.cierre .logo,.cierre .logo-txt{margin-inline:auto}
+.cierre h2{font-size:clamp(26px,3.6vw,44px);margin-top:26px}
+.cierre p.sub{color:var(--mut);max-width:620px;margin:14px auto 0}
+.cierre .acciones{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:30px}
+.cierre .redes{justify-content:center}
+footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));color:var(--mut);font-size:14px;text-align:center}
+
+/* ---------- visor de capturas ---------- */
+#lb{position:fixed;inset:0;z-index:60;background:rgba(5,3,12,.94);display:grid;place-items:center;padding:20px;cursor:zoom-out}
+#lb[hidden]{display:none}
+#lb img{max-width:100%;max-height:92vh;border-radius:10px}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .texto,.franja .arte img{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body class="es">
+
+<div id="loader" aria-hidden="true"><div class="cubo"><i></i><i></i><i></i></div></div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>RENEGADE</b> MILLENNIALS</a>
+    <ul>
+      <li><a href="#protagonistas"><span class="lang-es">Protagonistas</span><span class="lang-en">Heroes</span></a></li>
+      <li><a href="#enemigos"><span class="lang-es">Enemigos</span><span class="lang-en">Enemies</span></a></li>
+      <li><a href="#multijugador"><span class="lang-es">Multijugador</span><span class="lang-en">Multiplayer</span></a></li>
+      <li><a href="#poderes"><span class="lang-es">Poderes</span><span class="lang-en">Powers</span></a></li>
+      <li><a href="#modos"><span class="lang-es">Modos</span><span class="lang-en">Modes</span></a></li>
+      <li><a href="#capturas"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="comprar mini" data-compra href="#consiguelo"><span class="lang-es">Cómpralo</span><span class="lang-en">Buy</span></a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ====== PORTADA ====== -->
+  <section class="hero">
+    <div class="fondo"><img src="img/flow/hero.jpg" alt="Cuatro de los protagonistas de Renegade Millennials" fetchpriority="high" width="2752" height="1536"></div>
+    <div class="wrap">
+      <h1 class="sr">Renegade Millennials</h1>
+      <img class="logo" src="img/flow/logo.png" alt="Renegade Millennials" data-logo>
+      <div class="logo-txt" hidden aria-hidden="true">RENEGADE<br>MILLENNIALS</div>
+      <p class="tagline"><span class="lang-es">El mundo se ha vuelto loco. Toca arreglarlo a hostias.</span><span class="lang-en">The world has lost its mind. Time to fix it with your fists.</span></p>
+      <p class="lead"><span class="lang-es">Un brawler para 1 a 4 jugadores, en el mismo PC o por internet. Un grupo de millennials hartos contra todos los radicales que hacen del mundo un sitio peor.</span><span class="lang-en">A beat 'em up for 1 to 4 players, on the same PC or online. A bunch of fed-up millennials against every radical making the world a worse place.</span></p>
+      <div class="acciones">
+        <a class="comprar" data-compra href="#consiguelo"><span class="lang-es">Cómpralo ahora</span><span class="lang-en">Buy it now</span></a>
+        <div class="redes" data-redes></div>
+      </div>
+      <ul class="datos">
+        <li><b>1–4</b><span class="lang-es">jugadores</span><span class="lang-en">players</span></li>
+        <li><span class="lang-es"><b>Local</b>y en línea</span><span class="lang-en"><b>Local</b>and online</span></li>
+        <li><b>10</b><span class="lang-es">idiomas</span><span class="lang-en">languages</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ====== FRANJAS: imagen grande a un lado y texto al otro ====== -->
+  <section class="franja der" id="protagonistas">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">Quiénes somos</span><span class="lang-en">Who we are</span></div>
+      <h2><span class="lang-es">Millennials hasta las narices</span><span class="lang-en">Millennials who have had enough</span></h2>
+      <p class="lang-es">El mundo se ha vuelto loco: todos radicalizados, todos gritando y nadie escuchando. Un grupo de millennials, hartos de ver cómo todo se va a la mierda, han decidido poner orden de la única forma que queda: a hostias.</p>
+      <p class="lang-en">The world has lost its mind: everyone radicalised, everyone shouting and nobody listening. A bunch of millennials, sick of watching it all go down the drain, have decided to restore order the only way left: with their fists.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">Cada protagonista con su carácter y su forma de pegar</span><span class="lang-en">Every hero has their own attitude and fighting style</span></li>
+        <li><span class="lang-es">Humor sin filtro, de principio a fin</span><span class="lang-en">Unfiltered humour, start to finish</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/heroes_1.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <section class="franja izq" id="enemigos">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">A quién le pegas</span><span class="lang-en">Who you get to punch</span></div>
+      <h2><span class="lang-es">Reparte a quien le tienes coraje</span><span class="lang-en">Hit the people who get on your nerves</span></h2>
+      <p class="lang-es">Fachas, perroflautas, nazis, radicales de todos los colores, pijos, gurús del cripto, tertulianos… Todos los que hacen del mundo un sitio peor están aquí, y por fin puedes decirles lo que piensas. Con los puños. Sin bandos: aquí cobra todo el mundo.</p>
+      <p class="lang-en">Far-right thugs, crusties, neo-Nazis, radicals of every colour, posh kids, crypto gurus, TV pundits… Everyone who makes the world a worse place is here, and at last you can tell them what you think. With your fists. No sides taken: everybody gets it.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">Bandas enteras con sus líderes y sus jefes</span><span class="lang-en">Whole gangs with their leaders and bosses</span></li>
+        <li><span class="lang-es">Cada enemigo con sus frases, sus manías y sus trucos</span><span class="lang-en">Every enemy has their own lines, quirks and tricks</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/enemigos.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <section class="franja der" id="multijugador">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">De 1 a 4 jugadores</span><span class="lang-en">1 to 4 players</span></div>
+      <h2><span class="lang-es">Con tus colegas: en el mismo PC o por internet</span><span class="lang-en">With your mates: on the same PC or online</span></h2>
+      <p class="lang-es">Hasta cuatro jugadores en el mismo ordenador, con teclado y mandos, como en los salones recreativos. ¿Tus amigos están lejos? Abre una sala con un código de cuatro letras y jugad por internet. O mezcladlo todo.</p>
+      <p class="lang-en">Up to four players on the same computer, keyboard and controllers, just like the arcades. Friends far away? Open a room with a four-letter code and play online. Or mix both.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">1, 2, 3 o 4 jugadores, en local y en línea</span><span class="lang-en">1, 2, 3 or 4 players, local and online</span></li>
+        <li><span class="lang-es">Sin abrir puertos ni configurar nada</span><span class="lang-en">No port forwarding, no setup</span></li>
+        <li><span class="lang-es">Si a alguien se le cae la conexión, puede volver a la partida</span><span class="lang-en">If someone drops, they can rejoin the game</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/coop.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <section class="franja izq" id="poderes">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">Cómo se pelea</span><span class="lang-en">How you fight</span></div>
+      <h2><span class="lang-es">Combos, armas y poderes</span><span class="lang-en">Combos, weapons and powers</span></h2>
+      <p class="lang-es">Golpes, combos, agarres y remates. Bates, katanas y botellas que recoges del suelo. Y poderes que limpian la pantalla: rayos, columnas de fuego, ondas de energía. Fácil de coger en dos minutos, difícil de dominar.</p>
+      <p class="lang-en">Punches, combos, grabs and finishers. Bats, katanas and bottles you pick up off the floor. And screen-clearing powers: laser beams, pillars of fire, energy waves. Easy to pick up in two minutes, hard to master.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">Cada protagonista tiene sus propios poderes</span><span class="lang-en">Every hero has their own powers</span></li>
+        <li><span class="lang-es">Teclado o mando, como prefieras</span><span class="lang-en">Keyboard or controller, your choice</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/poderes.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <section class="franja der" id="infinito">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">Para rato</span><span class="lang-en">Built to last</span></div>
+      <h2><span class="lang-es">Un juego que no se acaba</span><span class="lang-en">A game that never ends</span></h2>
+      <p class="lang-es">Pásatelo. Luego pásatelo en un nivel más difícil. Luego intenta entrar en los récords mundiales, que empiezan de cero cada temporada. Siempre hay un tiempo que batir y un amigo al que picar.</p>
+      <p class="lang-en">Beat it. Then beat it on a harder level. Then try to make the world leaderboards, which reset every season. There is always a time to beat and a friend to wind up.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">Varios niveles de dificultad, del paseo a la pesadilla</span><span class="lang-en">Several difficulty levels, from a stroll to a nightmare</span></li>
+        <li><span class="lang-es">Récords mundiales por temporadas</span><span class="lang-en">Seasonal world leaderboards</span></li>
+        <li><span class="lang-es">La aventura se guarda: seguid otro día donde lo dejasteis</span><span class="lang-en">The adventure saves: pick up where you left off</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/records.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <section class="franja izq" id="competir">
+    <div class="wrap"><div class="texto">
+      <div class="kicker"><span class="lang-es">Pique sano</span><span class="lang-en">Friendly rivalry</span></div>
+      <h2><span class="lang-es">Batalla, torneo y oleadas</span><span class="lang-en">Battle, tournament and waves</span></h2>
+      <p class="lang-es">¿Quién es el mejor del grupo? Todos contra todos, por equipos o en torneo eliminatorio, en casa o en línea. Y si preferís ir juntos, aguantad oleadas de enemigos hasta que no quede nadie en pie.</p>
+      <p class="lang-en">Who is the best in the group? Free-for-all, teams or a knockout tournament, at home or online. And if you would rather stick together, hold out against waves of enemies until nobody is left standing.</p>
+      <ul class="puntos">
+        <li><span class="lang-es">Competición entre amigos, también por internet</span><span class="lang-en">Compete with friends, online too</span></li>
+        <li><span class="lang-es">Modo de oleadas con su propia tabla de récords</span><span class="lang-en">Wave mode with its own leaderboard</span></li>
+      </ul>
+    </div>
+    <div class="arte"><img src="img/flow/competir.jpg" alt="" loading="lazy" width="2752" height="1536"></div>
+    </div>
+  </section>
+
+  <!-- ====== MODOS: tarjetas apiladas sobre una rejilla de luz ====== -->
+  <section class="tec" id="modos">
+    <canvas id="rejilla" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="cabecera">
+        <div class="kicker"><span class="lang-es">Modos de juego</span><span class="lang-en">Game modes</span></div>
+        <h2><span class="lang-es">Una aventura y cinco formas más de liarla</span><span class="lang-en">One adventure and five more ways to cause trouble</span></h2>
+      </div>
+      <div class="pilas">
+        <div class="pila">
+          <article class="tarj" tabindex="0"><h3 data-n="01"><span class="lang-es">Aventura</span><span class="lang-en">Adventure</span></h3><p class="lang-es">La historia completa, solo o en cooperativo, con tienda entre fase y fase y partida guardada.</p><p class="lang-en">The full story, solo or co-op, with a shop between stages and a saved game.</p></article>
+          <article class="tarj" tabindex="0"><h3 data-n="02"><span class="lang-es">Batalla</span><span class="lang-en">Battle</span></h3><p class="lang-es">Todos contra todos o por equipos, en el escenario que elijas y con cualquier personaje.</p><p class="lang-en">Free-for-all or teams, on the stage of your choice with any character.</p></article>
+          <article class="tarj" tabindex="0"><h3 data-n="03"><span class="lang-es">Torneo</span><span class="lang-en">Tournament</span></h3><p class="lang-es">Eliminatorias entre amigos hasta que solo quede uno. También en línea.</p><p class="lang-en">Knockout brackets with friends until one is left standing. Online too.</p></article>
+        </div>
+        <div class="pila">
+          <article class="tarj" tabindex="0"><h3 data-n="04"><span class="lang-es">Aguanta oleadas</span><span class="lang-en">Survival</span></h3><p class="lang-es">Oleadas de enemigos cada vez más duras hasta que no puedas más. Con tabla de récords.</p><p class="lang-en">Ever tougher waves of enemies until you drop. With its own leaderboard.</p></article>
+          <article class="tarj" tabindex="0"><h3 data-n="05"><span class="lang-es">Práctica</span><span class="lang-en">Practice</span></h3><p class="lang-es">Prueba poderes y combos con calma, con todos los personajes y la lista de movimientos a la vista.</p><p class="lang-en">Try powers and combos in peace, with every character and the move list on screen.</p></article>
+          <article class="tarj" tabindex="0"><h3 data-n="06"><span class="lang-es">Récords</span><span class="lang-en">Leaderboards</span></h3><p class="lang-es">Clasificación mundial por temporadas, por número de jugadores y por dificultad.</p><p class="lang-en">Seasonal world rankings, by number of players and by difficulty.</p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CAPTURAS: baraja sobre losas de vidrio ====== -->
+  <section class="tec" id="capturas">
+    <canvas id="vidrio" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="cabecera">
+        <div class="kicker"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></div>
+        <h2><span class="lang-es">El juego en marcha</span><span class="lang-en">The game in motion</span></h2>
+        <p><span class="lang-es">Arrastra, usa las flechas o toca una captura para verla grande.</span><span class="lang-en">Drag, use the arrow keys or tap a screenshot to see it full size.</span></p>
+      </div>
+      <div class="baraja" id="baraja" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Capturas del juego"></div>
+      <div class="puntitos" id="puntitos"></div>
+    </div>
+  </section>
+
+  <!-- ====== CIERRE ====== -->
+  <section class="tec cierre" id="consiguelo">
+    <canvas id="ondas" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <img class="logo" src="img/flow/logo.png" alt="Renegade Millennials" data-logo>
+      <div class="logo-txt" hidden aria-hidden="true">RENEGADE<br>MILLENNIALS</div>
+      <h2><span class="lang-es">¿Bajas al barrio?</span><span class="lang-en">Coming down to the block?</span></h2>
+      <p class="sub" id="textoCompra"><span class="lang-es">Para Windows, con teclado o mando. Muy pronto a la venta: entra en el Discord y serás de los primeros en enterarte.</span><span class="lang-en">For Windows, keyboard or controller. On sale very soon: join the Discord and be among the first to know.</span></p>
+      <div class="acciones">
+        <a class="comprar" data-compra href="#consiguelo"><span class="lang-es">Cómpralo ahora</span><span class="lang-en">Buy it now</span></a>
+        <div class="redes" data-redes></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">© <span id="year"></span> Renegade Millennials</div></footer>
+
+<div id="lb" hidden><img alt=""></div>
+
+<script>
+(function () {
+  "use strict";
+  /* ===================== CONFIGURACIÓN =====================
+     Rellena lo que tengas; lo que esté vacío no se muestra.
+     comprarUrl: la tienda donde se compra (itch.io o Steam). Vacío = el botón lleva al Discord. */
+  var CONFIG = {
+    comprarUrl: "",
+    discordUrl: "https://discord.gg/g4Sj4rXXuJ",
+    instagramUrl: "",
+    steamUrl: ""
+  };
+  /* ========================================================= */
+
+  var ICONOS = {
+    discord: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4.5 3.5V17H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><circle cx="9" cy="11" r="1.3" class="lleno"/><circle cx="15" cy="11" r="1.3" class="lleno"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" class="lleno"/></svg>',
+    steam: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="15" cy="9.5" r="2.5"/><circle cx="8.5" cy="15" r="1.8"/><path d="M10 14l3-2.5"/></svg>'
+  };
+
+
+  /* --- idioma --- */
+  var saved = null;
+  try { saved = localStorage.getItem("trm-lang"); } catch (e) {}
+  var start = saved || ((navigator.language || "es").toLowerCase().indexOf("es") === 0 ? "es" : "en");
+  function setLang(l) {
+    document.body.className = l;
+    document.documentElement.lang = l;
+    var bs = document.querySelectorAll(".lang button");
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i].getAttribute("data-lang") === l ? "true" : "false");
+    try { localStorage.setItem("trm-lang", l); } catch (e) {}
+  }
+  var lbs = document.querySelectorAll(".lang button");
+  for (var i = 0; i < lbs.length; i++) lbs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang")); });
+  setLang(start);
+
+  /* --- botón de compra: a la tienda si hay enlace; si no, al Discord --- */
+  var compras = document.querySelectorAll("[data-compra]");
+  var destino = CONFIG.comprarUrl || CONFIG.steamUrl;
+  for (i = 0; i < compras.length; i++) {
+    if (destino) { compras[i].href = destino; compras[i].target = "_blank"; compras[i].rel = "noopener"; }
+    else if (compras[i].closest("#consiguelo") && CONFIG.discordUrl) { compras[i].href = CONFIG.discordUrl; compras[i].target = "_blank"; compras[i].rel = "noopener"; }
+  }
+  if (destino) {
+    document.getElementById("textoCompra").innerHTML = '<span class="lang-es">Para Windows, con teclado o mando.</span><span class="lang-en">For Windows, keyboard or controller.</span>';
+  }
+
+  /* --- redes: solo las que tienen enlace --- */
+  var redes = [["discord", CONFIG.discordUrl, "Discord"], ["instagram", CONFIG.instagramUrl, "Instagram"], ["steam", CONFIG.steamUrl, "Steam"]];
+  var cajas = document.querySelectorAll("[data-redes]");
+  for (i = 0; i < cajas.length; i++) for (var r = 0; r < redes.length; r++) if (redes[r][1]) {
+    var a = document.createElement("a");
+    a.href = redes[r][1]; a.target = "_blank"; a.rel = "noopener"; a.innerHTML = ICONOS[redes[r][0]] + "<span>" + redes[r][2] + "</span>";
+    cajas[i].appendChild(a);
+  }
+
+  /* --- imágenes de sección: si aún no existe la de Flow, se usa la de reserva --- */
+  var artes = document.querySelectorAll("img[data-fb]");
+  function reserva() { if (this.getAttribute("data-fb")) { var f = this.getAttribute("data-fb"); this.removeAttribute("data-fb"); this.src = f; } }
+  for (i = 0; i < artes.length; i++) {
+    artes[i].addEventListener("error", reserva);
+    if (artes[i].complete && artes[i].naturalWidth === 0 && artes[i].currentSrc) reserva.call(artes[i]);
+  }
+  /* --- logotipo: si falta el dibujo, el nombre en letras --- */
+  var logos = document.querySelectorAll("img[data-logo]");
+  function sinLogo() { this.hidden = true; this.style.display = "none"; this.nextElementSibling.hidden = false; }
+  for (i = 0; i < logos.length; i++) {
+    logos[i].addEventListener("error", sinLogo);
+    if (logos[i].complete && logos[i].naturalWidth === 0) sinLogo.call(logos[i]);
+  }
+
+  /* --- cargador --- */
+  var caras = document.querySelectorAll(".cubo i");
+  for (i = 0; i < caras.length; i++) for (var k = 0; k < 16; k++) {
+    var b = document.createElement("b");
+    b.style.animationDelay = (((k % 4) + Math.floor(k / 4) + i * 2) * 0.09) + "s";
+    caras[i].appendChild(b);
+  }
+  function fueraCarga() { document.getElementById("loader").classList.add("fuera"); }
+  window.addEventListener("load", function () { setTimeout(fueraCarga, 350); });
+  setTimeout(fueraCarga, 2500);
+
+  /* --- barra y aparición de las franjas --- */
+  var nav = document.getElementById("nav");
+  function alMover() { nav.classList.toggle("solida", window.scrollY > 40); }
+  window.addEventListener("scroll", alMover, { passive: true }); alMover();
+  var franjas = document.querySelectorAll(".franja");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      for (var j = 0; j < es.length; j++) if (es[j].isIntersecting) { es[j].target.classList.add("vista"); io.unobserve(es[j].target); }
+    }, { threshold: 0.22 });
+    for (i = 0; i < franjas.length; i++) io.observe(franjas[i]);
+  } else for (i = 0; i < franjas.length; i++) franjas[i].classList.add("vista");
+
+  var quieto = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ============================================================
+     Fondos WebGL (sin librerías): un canvas, un quad a pantalla completa,
+     un fragment shader y el puntero como uniform. Si no hay WebGL se queda
+     el fondo liso oscuro de la página. Solo animan en pantalla.
+     ============================================================ */
+  var PRE = "#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\n";
+
+  function fondoGL(cv, fs, cfg) {
+    if (!cv) return;
+    var gl = null;
+    try { gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true }) || cv.getContext("experimental-webgl"); } catch (e) { gl = null; }
+    if (!gl) return;
+    function compila(tipo, src) {
+      var s = gl.createShader(tipo); gl.shaderSource(s, src); gl.compileShader(s);
+      if (gl.getShaderParameter(s, gl.COMPILE_STATUS)) return s;
+      if (window.console) console.warn("shader:", gl.getShaderInfoLog(s)); return null;
+    }
+    var vs = compila(gl.VERTEX_SHADER, "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}"), fr = compila(gl.FRAGMENT_SHADER, PRE + fs);
+    if (!vs || !fr) return;
+    var pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fr); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+    gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var la = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(la); gl.vertexAttribPointer(la, 2, gl.FLOAT, false, 0, 0);
+    var L = {}, nombres = ["uRes", "uTime", "uMouse", "uLamp"].concat(cfg.u || []);
+    for (var n = 0; n < nombres.length; n++) L[nombres[n]] = gl.getUniformLocation(pr, nombres[n]);
+    var rt = { x: 0, y: 0, tx: 0, ty: 0, l: 0, tl: 0 }, w = 0, h = 0, esc = 1, vivo = false, raf = 0, t0 = performance.now(), tPrev = 0;
+    if (cfg.ini) cfg.ini(gl, L);
+
+    function cuadro(now) {
+      raf = 0;
+      var t = (now - t0) / 1000, dt = Math.min(0.1, Math.max(0, t - tPrev)); tPrev = t;
+      var kx = 1 - Math.pow(1 - (cfg.kxy || 0.12), dt * 60), kl = 1 - Math.pow(1 - (cfg.kl || 0.06), dt * 60);
+      rt.x += (rt.tx - rt.x) * kx; rt.y += (rt.ty - rt.y) * kx; rt.l += (rt.tl - rt.l) * kl;
+      gl.uniform1f(L.uTime, (cfg.t0 || 0) + t);
+      gl.uniform2f(L.uMouse, rt.x, rt.y); gl.uniform1f(L.uLamp, rt.l);
+      if (cfg.antes) cfg.antes(gl, L, t, dt, rt, w, h, esc);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (vivo && !quieto && !document.hidden) raf = requestAnimationFrame(cuadro);
+    }
+    function arranca() {
+      if (raf || !vivo || quieto || document.hidden) return;
+      tPrev = (performance.now() - t0) / 1000; raf = requestAnimationFrame(cuadro);
+    }
+    function mide() {
+      w = cv.clientWidth; h = cv.clientHeight; if (!w || !h) return;
+      esc = Math.min(window.devicePixelRatio || 1, 1.5) * (cfg.escala || 1);
+      cv.width = Math.max(1, Math.round(w * esc)); cv.height = Math.max(1, Math.round(h * esc));
+      gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(L.uRes, cv.width, cv.height);
+      if (cfg.tam) cfg.tam(gl, L, w, h, esc);
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      cuadro(performance.now()); /* repinta ya: cambiar el tamaño borra el lienzo */
+    }
+    cv.addEventListener("webglcontextlost", function (e) { e.preventDefault(); vivo = false; });
+    if (window.ResizeObserver) new ResizeObserver(mide).observe(cv); else window.addEventListener("resize", mide);
+    mide();
+    cv.parentNode.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch" || !cv.width) return;
+      var r = cv.getBoundingClientRect();
+      rt.tx = (e.clientX - r.left) / r.width * cv.width; rt.ty = (1 - (e.clientY - r.top) / r.height) * cv.height;
+      if (!rt.l) { rt.x = rt.tx; rt.y = rt.ty; } rt.tl = 1;
+    });
+    cv.parentNode.addEventListener("pointerleave", function () { rt.tl = 0; });
+    document.addEventListener("visibilitychange", arranca);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
+      vivo = es[0].isIntersecting; arranca();
+    }).observe(cv); else { vivo = true; arranca(); }
+  }
+
+  /* --- #modos · Grid Bloom: rejilla luminosa que late, se deforma y se pliega hacia el puntero.
+         Shader propio que reproduce el aspecto del componente «Grid Bloom» (21st.dev, @chamaac). --- */
+  fondoGL(document.getElementById("rejilla"), [
+    "uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse; uniform float uLamp; uniform float uUnit;",
+    "float h21(vec2 p){ p = fract(p * vec2(233.34, 851.73)); p += dot(p, p + 23.45); return fract(p.x * p.y); }",
+    "float ruido(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);",
+    "  return mix(mix(h21(i), h21(i + vec2(1.0, 0.0)), f.x), mix(h21(i + vec2(0.0, 1.0)), h21(i + vec2(1.0, 1.0)), f.x), f.y) * 2.0 - 1.0; }",
+    "void main(){",
+    "  float t = uTime;",
+    "  vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uUnit;",
+    "  vec2 mp = (uMouse - 0.5 * uRes) / uUnit;",
+    "  vec2 md = p - mp; float dm = length(md);",
+    "  float inf = smoothstep(1.0, 0.0, dm) * uLamp;",
+    "  float onda = ruido(p * 1.5 + t * 0.15);",
+    "  vec2 q = p + vec2(onda * 0.11) + md * inf * 0.6;",
+    "  vec2 g = q * 12.0 + t * vec2(-0.2, -0.4);",
+    "  vec2 cc = abs(fract(g) - 0.5);",
+    "  vec2 ln = smoothstep(0.455, 0.485, cc);",
+    "  float red = max(ln.x, ln.y);",
+    "  float nodo = ln.x * ln.y;",
+    "  float azar = ruido(floor(g) * 0.4 + t * 0.4);",
+    "  float orbe = smoothstep(0.2, 0.5, cc.x) * smoothstep(0.2, 0.5, cc.y) * smoothstep(0.3, 0.8, azar);",
+    "  float a = red * 0.3 + nodo * 0.8 + orbe * 0.6;",
+    "  a *= 0.6 + 0.4 * ruido(p * 4.0 - t * 0.5);",
+    "  float latido = 0.5 + 0.5 * sin(length(p) * 8.0 - t * 1.5 + onda * 2.0);",
+    "  a += a * latido * 0.4;",
+    "  a += smoothstep(0.5, 0.0, dm) * 0.6 * uLamp * red;",
+    "  a *= (1.0 - smoothstep(0.1, 10.0, length(p))) * (0.8 + 0.2 * sin(t * 0.8));",
+    "  a = clamp(a, 0.0, 1.0);",
+    "  vec3 col = vec3(0.878, 0.251, 0.984);",
+    "  gl_FragColor = vec4(col * a, a);",
+    "}"
+  ].join("\n"), {
+    u: ["uUnit"], escala: 1, kxy: 0.1, kl: 0.15,
+    tam: function (gl, L, w, h, esc) { gl.uniform1f(L.uUnit, 500 * esc); } /* 12 celdas por cada 500 px, como el original */
+  });
+
+  /* --- #capturas · Glass Tiles: losas de vidrio gruesas que refractan una luz que se mueve detrás;
+         el puntero hace de lámpara. Basado en el shader del componente «Glass Tiles» de ham7a311
+         (21st.dev), licencia MIT. Copyright (c) ham7a311. Paleta «ember» del propio componente. --- */
+  var VIDRIO = [
+    "uniform vec2 uRes; uniform float uTime; uniform float uCols; uniform vec2 uMouse; uniform float uLamp;",
+    "uniform vec3 uGlow; uniform vec3 uDeep; uniform vec3 uGround;",
+    "float light(vec2 p){",
+    "  float t = uTime; float v = 0.0;",
+    "  for (int i = 0; i < 3; i++){",
+    "    float fi = float(i);",
+    "    float y = 0.5 + 0.32 * sin(p.x * (0.9 + fi * 0.35) + t * (0.21 + fi * 0.07) + fi * 2.1) + 0.12 * sin(p.x * 2.7 - t * 0.3 + fi);",
+    "    v += exp(-pow((p.y - y) / 0.02, 2.0)) * (1.0 - fi * 0.18);",
+    "  }",
+    "  for (int i = 0; i < 3; i++){",
+    "    float fi = float(i);",
+    "    vec2 c = vec2(0.5 * uRes.x / uRes.y + 0.6 * sin(t * 0.13 + fi * 2.4), 0.5 + 0.35 * cos(t * 0.11 + fi * 1.7));",
+    "    v += exp(-dot(p - c, p - c) / 0.05) * 0.35;",
+    "  }",
+    "  vec2 m = uMouse / uRes.y;",
+    "  v += exp(-dot(p - m, p - m) / 0.012) * 1.2 * uLamp;",
+    "  return v;",
+    "}",
+    "void main(){",
+    "  vec2 p = gl_FragCoord.xy / uRes.y;",
+    "  float aspect = uRes.x / uRes.y;",
+    "  float size = aspect / uCols;",
+    "  vec2 id = floor(p / size);",
+    "  vec2 q = (fract(p / size) - 0.5) * 2.0;",
+    "  vec2 aq = abs(q);",
+    "  float sq = pow(pow(aq.x, 9.0) + pow(aq.y, 9.0), 1.0 / 9.0);",
+    "  float d = sq - 0.955;",
+    "  if (d > 0.0) { gl_FragColor = vec4(uGround * 0.6, 1.0); return; }",
+    "  float edge = clamp(1.0 + d / 0.55, 0.0, 1.0);",
+    "  vec2 g = normalize(sign(q) * pow(aq + 1e-4, vec2(8.0)));",
+    "  float bend = pow(edge, 2.2);",
+    "  vec2 centre = (id + 0.5) * size;",
+    "  vec2 look = centre + q * size * 0.5 * (1.0 - 0.55 * bend) - g * bend * size * 0.9;",
+    "  float L = light(look);",
+    "  float face = light(centre + q * size * 0.32) * 0.3;",
+    "  float rim = L * pow(edge, 1.5) * 3.2;",
+    "  float fres = pow(edge, 8.0) * 0.08;",
+    "  vec3 col = uGround + uDeep * (face + 0.04) + uGlow * (rim + face * 0.6) + vec3(1.0) * pow(max(rim - 1.2, 0.0), 2.0) * 0.35 + fres;",
+    "  col *= 0.85 + 0.15 * (0.5 + 0.5 * q.y);",
+    "  gl_FragColor = vec4(col, 1.0);",
+    "}"
+  ].join("\n");
+  function hexRgb(s) { var n = parseInt(s.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; }
+  fondoGL(document.getElementById("vidrio"), VIDRIO, {
+    u: ["uCols", "uGlow", "uDeep", "uGround"], escala: 0.85, t0: 12,
+    ini: function (gl, L) {
+      var g = hexRgb("#ff8a3d"), d = hexRgb("#6b2410"), s = hexRgb("#0c0503");
+      gl.uniform3f(L.uGlow, g[0], g[1], g[2]); gl.uniform3f(L.uDeep, d[0], d[1], d[2]); gl.uniform3f(L.uGround, s[0], s[1], s[2]);
+    },
+    tam: function (gl, L, w) { gl.uniform1f(L.uCols, w < 640 ? 4 : 8); }
+  });
+
+  /* --- #consiguelo · HeroWave: campo de barras inclinadas cuya altura rueda en olas lentas (ciclo de 55 s),
+         con bloom suave y grano; las barras cercanas al puntero se encienden al moverlo.
+         Shader propio que reproduce el aspecto del fondo del componente «AI Hero Input» (21st.dev, @socolled). --- */
+  (function () {
+    var cv = document.getElementById("ondas"); if (!cv) return;
+    /* ola: [segundo, altura, velocidad de fase, longitud de onda] */
+    var OLA1 = [[0, 10, 0, 0.5], [4, 300, 1, 0.5], [6, 300, 4, 4.7], [8, 225, 4, 4.7], [10, 500, 1, 4.7], [14, 225, 3, 4.7], [22, 100, 6, 4.7], [28, 0, 0.9, 0.5], [30, 128, 0.9, 0.5], [32, 190, 1.4, 0.5], [39, 500, 4, 4.7], [42, 400, 2.8, 4.7], [44, 330, 2.6, 4.7], [48, 190, 5.4, 0.5], [52, 32, 0.1, 0.5], [55, 10, 0, 0.5]];
+    var OLA2 = [[0, 0, 0, 0.5], [9, 0, 0, 0.5], [10, 400, 1, 0.5], [13, 300, 4, 4.7], [24, 96, 2, 0.5], [28, 0, 0.9, 0.5], [30, 142, 0.9, 0.5], [36, 374, 4, 4.7], [40, 300, 2.3, 4.7], [44, 245, 2, 4.7], [48, 141, 5.1, 0.5], [52, 24, 0.08, 0.5], [55, 8, 0, 0.5]];
+    function suave(k) { return k < 0.5 ? 2 * k * k : 1 - 2 * (1 - k) * (1 - k); }
+    function ola(kf, t, sal) {
+      var i = 0; while (i < kf.length - 2 && t > kf[i + 1][0]) i++;
+      var a = kf[i], b = kf[i + 1], k = suave(Math.min(1, Math.max(0, (t - a[0]) / (b[0] - a[0]))));
+      sal[0] = a[1] + (b[1] - a[1]) * k; sal[1] = a[2] + (b[2] - a[2]) * k; sal[2] = a[3] + (b[3] - a[3]) * k;
+    }
+    var TAN = Math.tan(23.4 * Math.PI / 180), ANCHO = 14, HUECO = 10, EXTRA = 320;
+    var n = 0, x0 = 0, paso = 24, glow = new Float32Array(256), bytes = new Uint8Array(256), tex = null;
+    var ph1 = 0, ph2 = 0, A = 0, activo = false, vel = 0, o1 = [0, 0, 0], o2 = [0, 0, 0];
+    fondoGL(cv, [
+      "uniform vec2 uRes; uniform float uTime; uniform float uDpr; uniform float uBase; uniform float uN; uniform float uX0; uniform float uPitch; uniform float uGm; uniform float uTan;",
+      "uniform vec3 uW1; uniform vec3 uW2; uniform sampler2D uGl;",
+      "float alt(vec3 w, float t){ return max(20.0, (sin(w.z + t * w.y) * 0.5 + 0.6) * w.x * uGm); }",
+      "float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); q += dot(q, q.yxz + 19.19); return fract((q.x + q.y) * q.z); }",
+      /* cuánto cubre una barra en este punto: ancha casi desde la base y afilada en la punta */
+      "float cobertura(float h, float yy, float dx){",
+      "  if (yy > h) return 0.0;",
+      "  float u = yy / h; float punta = clamp(10.0 / h, 0.0, 0.95); float ty = 1.0 - punta;",
+      "  float ancho = u >= ty ? 1.0 - pow((u - ty) / punta, 0.9) : pow(u / ty, 0.5);",
+      "  float px = 1.0 / (14.0 * uDpr);",
+      "  return smoothstep(-px, px, ancho - abs(dx) / 7.0);",
+      "}",
+      "void main(){",
+      "  vec2 P = gl_FragCoord.xy / uDpr;",
+      "  float yy = P.y - uBase;",
+      "  float span = uPitch * (uN - 1.0);",
+      "  vec3 col = vec3(0.0);",
+      "  if (yy > 0.0) {",
+      "    float xc = P.x - yy * uTan;",
+      "    float i = floor((xc - uX0) / uPitch + 0.5);",
+      "    if (i >= 0.0 && i < uN) {",
+      "      float dx = xc - (uX0 + i * uPitch);",
+      "      float t = uN > 1.0 ? i / (uN - 1.0) : 0.0;",
+      "      float gl = texture2D(uGl, vec2((i + 0.5) / uN, 0.5)).r * 40.0;",
+      "      vec3 bc = vec3(0.0, 0.091, 1.0) + vec3(0.12, 0.24, 0.74) * (0.05 + gl * 0.9);",
+      "      float a = (cobertura(alt(uW1, t), yy, dx) + cobertura(alt(uW2, t), yy, dx)) * 0.35;",
+      "      col += bc * a;",
+      "    }",
+      "  }",
+      /* el bloom: un resplandor azul sobre la silueta de las olas */
+      "  float t0 = clamp((P.x - uX0) / span, 0.0, 1.0);",
+      "  float H0 = max(alt(uW1, t0), alt(uW2, t0));",
+      "  float t1 = clamp((P.x - H0 * uTan - uX0) / span, 0.0, 1.0);",
+      "  float H = max(alt(uW1, t1), alt(uW2, t1));",
+      "  float d = max(yy - H, 0.0);",
+      "  float suelo = smoothstep(-30.0, 8.0, yy);",
+      "  col += vec3(0.05, 0.07, 0.40) * exp(-d / 55.0) * 0.34 * suelo + vec3(0.02, 0.03, 0.20) * exp(-d / 230.0) * 0.30 * suelo;",
+      /* el bloom también rellena los huecos entre barras dentro de cada colina */
+      "  float tc = clamp((P.x - yy * uTan - uX0) / span, 0.0, 1.0);",
+      "  float relleno = smoothstep(alt(uW1, tc) + 10.0, alt(uW1, tc) - 25.0, yy) + smoothstep(alt(uW2, tc) + 10.0, alt(uW2, tc) - 25.0, yy);",
+      "  col += vec3(0.06, 0.08, 1.0) * relleno * smoothstep(0.0, 15.0, yy) * 0.2;",
+      /* grano de película */
+      "  float g = hash(gl_FragCoord.xy + vec2(37.0, 17.0) * fract(uTime * 0.07)) * 2.0 - 1.0;",
+      "  col += g * 0.08;",
+      "  col = max(col, 0.0) * 0.8;",
+      "  gl_FragColor = vec4(col, clamp(max(col.r, max(col.g, col.b)), 0.0, 1.0));",
+      "}"
+    ].join("\n"), {
+      u: ["uDpr", "uBase", "uN", "uX0", "uPitch", "uGm", "uTan", "uW1", "uW2", "uGl"], escala: 0.5, kxy: 1, kl: 1, t0: 0,
+      ini: function (gl, L) {
+        gl.uniform1f(L.uTan, TAN); gl.uniform1i(L.uGl, 0);
+        tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      },
+      tam: function (gl, L, w, h, esc) {
+        var zt = w + EXTRA; n = Math.min(256, Math.max(1, Math.floor((zt + HUECO) / (ANCHO + HUECO))));
+        paso = ANCHO + (n > 1 ? (zt - n * ANCHO) / (n - 1) : 0); x0 = -EXTRA + ANCHO / 2;
+        for (var i = 0; i < 256; i++) glow[i] = 0;
+        gl.uniform1f(L.uDpr, esc); gl.uniform1f(L.uBase, w < 768 ? 20 : 40); gl.uniform1f(L.uN, n);
+        gl.uniform1f(L.uX0, x0); gl.uniform1f(L.uPitch, paso); gl.uniform1f(L.uGm, h * 0.6 / 500 / 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, n, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array(n));
+      },
+      antes: function (gl, L, t, dt, rt, w, h, esc) {
+        var tm = quieto ? 38 : t % 55;
+        ola(OLA1, tm, o1); ola(OLA2, tm, o2);
+        if (!quieto) { ph1 = (ph1 + o1[1] * dt) % 6.2832; ph2 = (ph2 + o2[1] * dt) % 6.2832; }
+        gl.uniform3f(L.uW1, o1[0], o1[2], ph1); gl.uniform3f(L.uW2, o2[0], o2[2], ph2);
+        /* el puntero: la velocidad con que se mueve enciende las barras cercanas */
+        var mx = rt.tx / esc, kA = 1 - Math.exp(-30 * dt);
+        if (!activo && rt.tl) { A = mx; activo = true; }
+        var lag = rt.tl ? mx - A : 0; A += (mx - A) * kA; if (!rt.tl) activo = false;
+        var v = Math.abs(lag) * 0.52; vel += (v - vel) * (1 - Math.exp(-8.5 * dt));
+        var radio = 0.3 * (n * (ANCHO + HUECO) - HUECO), kd = 1 - Math.exp(-3.3 * dt), ks = 1 - Math.exp(-1.5 * dt);
+        for (var i = 0; i < n; i++) {
+          var dn = Math.abs(A - (x0 + i * paso)), pr = dn < radio ? 1 - Math.pow(dn / radio, 0.6) : 0;
+          var gv = glow[i] + (rt.tl ? pr * vel * ks : 0) - glow[i] * kd; glow[i] = gv > 40 ? 40 : gv < 0 ? 0 : gv; bytes[i] = Math.round(glow[i] / 40 * 255);
+        }
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, n, 1, gl.LUMINANCE, gl.UNSIGNED_BYTE, bytes.subarray(0, n));
+      }
+    });
+  })();
+
+  /* --- baraja de capturas --- */
+  var CAPS = ["cap-playa", "cap-boda", "cap-feria", "cap-carcel", "cap-manifestacion", "cap-discoteca", "cap-club-nautico", "cap-tienda"];
+  var bar = document.getElementById("baraja"), pts = document.getElementById("puntitos"), act = 0, naipes = [], botones = [], reloj = null;
+  var lb = document.getElementById("lb"), lbImg = lb.querySelector("img");
+  function coloca() {
+    var n = CAPS.length;
+    for (var j = 0; j < n; j++) {
+      var d = j - act; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
+      var el = naipes[j], a = Math.abs(d);
+      el.style.setProperty("--d", d); el.style.setProperty("--a", Math.min(a, 3));
+      el.style.zIndex = String(50 - a); el.style.opacity = a > 3 ? "0" : "1"; el.style.pointerEvents = a > 3 ? "none" : "";
+      el.classList.toggle("act", d === 0); el.setAttribute("aria-hidden", d === 0 ? "false" : "true");
+      botones[j].setAttribute("aria-current", d === 0 ? "true" : "false");
+    }
+  }
+  function ve(k) { act = (k + CAPS.length) % CAPS.length; coloca(); }
+  function auto() { clearInterval(reloj); if (!quieto) reloj = setInterval(function () { if (lb.hidden && !document.hidden) ve(act + 1); }, 4200); }
+  CAPS.forEach(function (cp, j) {
+    var f = document.createElement("figure"); f.className = "naipe";
+    f.innerHTML = '<img src="img/' + cp + '.webp" alt="" loading="lazy" draggable="false">';
+    f.addEventListener("click", function () {
+      if (arrastro) return;
+      if (j === act) { lbImg.src = "img/" + cp + ".webp"; lb.hidden = false; } else { ve(j); auto(); }
+    });
+    bar.appendChild(f); naipes.push(f);
+    var p = document.createElement("button"); p.type = "button"; p.setAttribute("aria-label", "Captura " + (j + 1));
+    p.addEventListener("click", function () { ve(j); auto(); });
+    pts.appendChild(p); botones.push(p);
+  });
+  var x0 = null, arrastro = false;
+  bar.addEventListener("pointerdown", function (e) { x0 = e.clientX; arrastro = false; });
+  window.addEventListener("pointerup", function (e) {
+    if (x0 === null) return;
+    var dx = e.clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) { arrastro = true; ve(act + (dx < 0 ? 1 : -1)); auto(); setTimeout(function () { arrastro = false; }, 60); }
+  });
+  bar.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") { ve(act + 1); auto(); } else if (e.key === "ArrowLeft") { ve(act - 1); auto(); }
+  });
+  coloca(); auto();
+  function cerrar() { lb.hidden = true; lbImg.removeAttribute("src"); }
+  lb.addEventListener("click", cerrar);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) cerrar(); });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
