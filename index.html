@@ -333,7 +333,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   <!-- ====== MODOS: tarjetas apiladas sobre una rejilla de luz ====== -->
   <section class="tec" id="modos">
-    <canvas id="rejilla" aria-hidden="true"></canvas>
+    <canvas id="vidrio" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Modos de juego</span><span class="lang-en">Game modes</span></div>
@@ -356,7 +356,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   <!-- ====== CAPTURAS: baraja sobre losas de vidrio ====== -->
   <section class="tec" id="capturas">
-    <canvas id="vidrio" aria-hidden="true"></canvas>
+    <canvas id="rejilla" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Capturas</span><span class="lang-en">Screenshots</span></div>
@@ -435,12 +435,13 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     document.getElementById("textoCompra").innerHTML = '<span class="lang-es">Para Windows, con teclado o mando.</span><span class="lang-en">For Windows, keyboard or controller.</span>';
   }
 
-  /* --- redes: solo las que tienen enlace --- */
+  /* --- redes: salen las tres; la que aún no tiene enlace no lleva a ningún sitio hasta que se rellene arriba --- */
   var redes = [["discord", CONFIG.discordUrl, "Discord"], ["instagram", CONFIG.instagramUrl, "Instagram"], ["steam", CONFIG.steamUrl, "Steam"]];
   var cajas = document.querySelectorAll("[data-redes]");
-  for (i = 0; i < cajas.length; i++) for (var r = 0; r < redes.length; r++) if (redes[r][1]) {
+  for (i = 0; i < cajas.length; i++) for (var r = 0; r < redes.length; r++) {
     var a = document.createElement("a");
-    a.href = redes[r][1]; a.target = "_blank"; a.rel = "noopener"; a.innerHTML = ICONOS[redes[r][0]] + "<span>" + redes[r][2] + "</span>";
+    if (redes[r][1]) { a.href = redes[r][1]; a.target = "_blank"; a.rel = "noopener"; } else { a.href = "#"; a.addEventListener("click", function (e) { e.preventDefault(); }); }
+    a.innerHTML = ICONOS[redes[r][0]] + "<span>" + redes[r][2] + "</span>";
     cajas[i].appendChild(a);
   }
 
