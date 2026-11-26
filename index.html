@@ -147,12 +147,14 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 #arte .cabecera{text-shadow:0 0 16px rgba(10,6,20,.9),0 2px 6px rgba(10,6,20,.75)}
 .tec::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg),transparent 18%,transparent 82%,var(--bg))}
 /* la sección de antes es negra pura: la malla de los modos nace del negro poco a poco, sin corte */
-#arte::after{background:linear-gradient(to bottom,var(--bg),transparent 16%,transparent 55%,rgba(0,0,0,.75) 80%,#000 100%)}
+#arte::after{background:linear-gradient(to bottom,transparent,transparent 16%,transparent 55%,rgba(0,0,0,.75) 80%,#000 100%)}
 #consiguelo::after{background:linear-gradient(to bottom,#000 0,#000 6%,rgba(0,0,0,.8) 20%,rgba(0,0,0,.45) 38%,transparent 60%,transparent 85%,#000)}
-#modos::after{background:linear-gradient(to bottom,#000 0,#000 4%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.45) 24%,transparent 40%,transparent 82%,var(--bg))}
+#modos::after{background:linear-gradient(to bottom,#000 0,#000 4%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.45) 24%,transparent 40%,transparent)}
 .cabecera{max-width:720px;margin-bottom:44px}
 .cabecera h2{font-size:clamp(28px,3.8vw,46px)}
 .cabecera p{color:var(--mut);margin-top:14px}
+.fondo-doble{position:relative;isolation:isolate;overflow:hidden}
+.fondo-doble>canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
 /* ---------- tarjetas apiladas (modos de juego) ---------- */
 .pilas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:120px 40px;padding:60px 0 90px}
 .pila{display:grid;grid-template-areas:"p";place-items:center}
@@ -368,8 +370,9 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   </section>
 
   <!-- ====== MODOS: tarjetas apiladas sobre una rejilla de luz ====== -->
+<div class="fondo-doble">
+    <canvas id="rejilla" aria-hidden="true"></canvas>
   <section class="tec" id="modos">
-    <canvas id="rejilla2" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Modos de juego</span><span class="lang-en">Game modes</span></div>
@@ -392,7 +395,6 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
 
   <!-- ====== DIRECCIÓN DE ARTE: baraja con las imágenes preferidas de José, en orden aleatorio ====== -->
   <section class="tec" id="arte">
-    <canvas id="rejilla" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="cabecera">
         <div class="kicker"><span class="lang-es">Dirección de arte</span><span class="lang-en">Art direction</span></div>
@@ -402,6 +404,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
       <div class="contador" id="contador" aria-live="polite"></div>
     </div>
   </section>
+</div>
 
   <!-- ====== TU PERSONAJE ====== -->
   <section class="tuyo" id="tu-personaje">
@@ -612,40 +615,6 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   /* --- #modos · Grid Bloom: rejilla luminosa que late, se deforma y se pliega hacia el puntero.
          Shader propio que reproduce el aspecto del componente «Grid Bloom» (21st.dev, @chamaac). --- */
   fondoGL(document.getElementById("rejilla"), [
-    "uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse; uniform float uLamp; uniform float uUnit;",
-    "float h21(vec2 p){ p = fract(p * vec2(233.34, 851.73)); p += dot(p, p + 23.45); return fract(p.x * p.y); }",
-    "float ruido(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);",
-    "  return mix(mix(h21(i), h21(i + vec2(1.0, 0.0)), f.x), mix(h21(i + vec2(0.0, 1.0)), h21(i + vec2(1.0, 1.0)), f.x), f.y) * 2.0 - 1.0; }",
-    "void main(){",
-    "  float t = uTime;",
-    "  vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uUnit;",
-    "  vec2 mp = (uMouse - 0.5 * uRes) / uUnit;",
-    "  vec2 md = p - mp; float dm = length(md);",
-    "  float inf = smoothstep(1.0, 0.0, dm) * uLamp;",
-    "  float onda = ruido(p * 1.5 + t * 0.15);",
-    "  vec2 q = p + vec2(onda * 0.11) + md * inf * 0.6;",
-    "  vec2 g = q * 12.0 + t * vec2(-0.2, -0.4);",
-    "  vec2 cc = abs(fract(g) - 0.5);",
-    "  vec2 ln = smoothstep(0.455, 0.485, cc);",
-    "  float red = max(ln.x, ln.y);",
-    "  float nodo = ln.x * ln.y;",
-    "  float azar = ruido(floor(g) * 0.4 + t * 0.4);",
-    "  float orbe = smoothstep(0.2, 0.5, cc.x) * smoothstep(0.2, 0.5, cc.y) * smoothstep(0.3, 0.8, azar);",
-    "  float a = red * 0.3 + nodo * 0.8 + orbe * 0.6;",
-    "  a *= 0.6 + 0.4 * ruido(p * 4.0 - t * 0.5);",
-    "  float latido = 0.5 + 0.5 * sin(length(p) * 8.0 - t * 1.5 + onda * 2.0);",
-    "  a += a * latido * 0.4;",
-    "  a += smoothstep(0.5, 0.0, dm) * 0.6 * uLamp * red;",
-    "  a *= (1.0 - smoothstep(0.1, 10.0, length(p))) * (0.8 + 0.2 * sin(t * 0.8));",
-    "  a = clamp(a, 0.0, 1.0);",
-    "  vec3 col = vec3(1.0, 0.42, 0.10);",
-    "  gl_FragColor = vec4(col * a, a);",
-    "}"
-  ].join("\n"), {
-    u: ["uUnit"], escala: 1, kxy: 0.1, kl: 0.15,
-    tam: function (gl, L, w, h, esc) { gl.uniform1f(L.uUnit, 500 * esc); } /* 12 celdas por cada 500 px, como el original */
-  });
-  fondoGL(document.getElementById("rejilla2"), [
     "uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse; uniform float uLamp; uniform float uUnit;",
     "float h21(vec2 p){ p = fract(p * vec2(233.34, 851.73)); p += dot(p, p + 23.45); return fract(p.x * p.y); }",
     "float ruido(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);",
