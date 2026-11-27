@@ -78,6 +78,9 @@ body.es .lang-en,body.en .lang-es{display:none!important}
 .comprar:active{transform:scale(.97)}
 .comprar:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
 .comprar.mini{font-size:13px;padding:10px 16px;border-radius:9px;flex:none}
+.demo{display:inline-block;margin-top:14px;font:400 14px/1.2 Audiowide,sans-serif;letter-spacing:.5px;color:var(--ice);text-decoration:none;border-bottom:1px dashed currentColor;padding-bottom:2px}
+.demo:hover{color:#fff}
+.demo:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
 .nota-compra{color:var(--mut);font-size:14.5px;margin-top:14px}
 
 /* ---------- redes ---------- */
@@ -274,6 +277,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
         <a class="comprar" data-compra href="#consiguelo"><span class="lang-es">Cómpralo ahora</span><span class="lang-en">Buy it now</span></a>
         <div class="redes" data-redes></div>
       </div>
+      <a class="demo" data-demo href="proximamente.html"><span class="lang-es">&#9658; Prueba la demo gratis</span><span class="lang-en">&#9658; Try the free demo</span></a>
       <ul class="datos">
         <li><b>1–4</b><span class="lang-es">jugadores</span><span class="lang-en">players</span></li>
         <li><span class="lang-es"><b>Local</b>y en línea</span><span class="lang-en"><b>Local</b>and online</span></li>
@@ -432,6 +436,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
         <a class="comprar" data-compra href="#consiguelo"><span class="lang-es">Cómpralo ahora</span><span class="lang-en">Buy it now</span></a>
         <div class="redes" data-redes></div>
       </div>
+      <a class="demo" data-demo href="proximamente.html"><span class="lang-es">&#9658; Prueba la demo gratis</span><span class="lang-en">&#9658; Try the free demo</span></a>
     </div>
   </section>
   <!-- ====== CAPTURAS: cinta curva que pasa sin fin ====== -->
@@ -456,7 +461,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
     discordUrl: "https://discord.gg/g4Sj4rXXuJ",
     contactEmail: "renegademillennialsgame@gmail.com",
     instagramUrl: "https://www.instagram.com/renegade.millennials/",
-    steamUrl: ""
+    steamUrl: "",
+    demoUrl: ""      /* dónde se descarga la demo (la página de itch.io). Vacío = lleva a proximamente.html */
   };
   /* ========================================================= */
 
@@ -492,6 +498,10 @@ footer{border-top:1px solid var(--line);padding:26px 0 calc(26px + env(safe-area
   if (destino) {
     document.getElementById("textoCompra").innerHTML = '<span class="lang-es">Para Windows, con teclado o mando.</span><span class="lang-en">For Windows, keyboard or controller.</span>';
   }
+
+  /* --- enlace de la demo, debajo de «Cómpralo ahora» --- */
+  var demos = document.querySelectorAll("[data-demo]");
+  for (i = 0; i < demos.length; i++) if (CONFIG.demoUrl) { demos[i].href = CONFIG.demoUrl; demos[i].target = "_blank"; demos[i].rel = "noopener"; }
 
   /* --- correo de contacto --- */
   var correos = document.querySelectorAll("[data-correo]");
