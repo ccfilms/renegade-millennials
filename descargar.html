@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Descargar el juego — Renegade Millennials</title>
+<meta name="theme-color" content="#0a0614">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#0a0614;--card:#171028;--line:#2e2150;--fg:#f5f0ff;--mut:#b9aed6;--sun:#ffc21a;--fire:#ff6a1a;--hot:#ff2e63;--ice:#38d6ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;display:grid;place-items:center;background:radial-gradient(900px 520px at 50% 0,#1d1140,transparent 70%),var(--bg);color:var(--fg);font:400 17px/1.65 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding:28px 20px}
+body.es .lang-en,body.en .lang-es{display:none!important}
+main{width:min(640px,100%);text-align:center}
+.logo{width:min(340px,78%);margin:0 auto 22px;display:block}
+.kicker{font:400 13px/1 Audiowide,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--sun)}
+h1{font:400 clamp(32px,7vw,54px)/1.08 Audiowide,Inter,sans-serif;margin:14px 0 16px;background:linear-gradient(100deg,var(--sun),var(--fire) 60%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{margin:0 auto;max-width:520px;color:var(--mut)}
+ol{text-align:left;max-width:460px;margin:26px auto 0;padding:18px 22px 18px 42px;background:rgba(23,16,40,.6);border:1px solid var(--line);border-radius:14px;color:var(--fg)}
+ol li{margin:6px 0}
+ol b{color:var(--sun);font-weight:600}
+.nota{font-size:14px;margin-top:18px}
+.nota a{color:var(--ice)}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:400 16px/1 Audiowide,sans-serif;letter-spacing:.6px;text-decoration:none;padding:16px 26px;border-radius:12px;transition:transform .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+.btn.pri{color:#1a0f00;background:linear-gradient(100deg,var(--sun),var(--fire) 70%,var(--hot));box-shadow:0 10px 34px -10px rgba(255,106,26,.85),inset 0 1px 0 rgba(255,255,255,.45)}
+.btn.sec{color:var(--fg);border:1px solid var(--line);background:rgba(23,16,40,.6)}
+.btn.sec:hover{border-color:var(--ice)}
+.btn[aria-disabled=true]{opacity:.55;pointer-events:none}
+.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lang{position:fixed;top:16px;right:16px;display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{font:600 12px/1 Inter,sans-serif;padding:8px 10px;border:0;background:transparent;color:var(--mut);cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--sun);color:#1a0f00}
+</style>
+</head>
+<body class="es">
+<div class="lang" role="group" aria-label="Idioma / Language">
+  <button type="button" data-lang="es" aria-pressed="true">ES</button>
+  <button type="button" data-lang="en" aria-pressed="false">EN</button>
+</div>
+<main>
+  <a href="./"><img class="logo" src="img/flow/logo.png?v=20261126" alt="Renegade Millennials"></a>
+  <div class="kicker"><span class="lang-es">¿Ya tienes una clave?</span><span class="lang-en">Already have a key?</span></div>
+  <h1><span class="lang-es">Descarga el juego</span><span class="lang-en">Download the game</span></h1>
+  <p class="lang-es">Si ya tienes tu clave, no tienes que comprar nada: descarga el juego aquí y actívalo con ella. Sin clave el juego no arranca.</p>
+  <p class="lang-en">If you already have your key, you don't need to buy anything: download the game here and activate it with your key. The game won't start without one.</p>
+  <ol class="lang-es">
+    <li><b>Descarga</b> el juego con el botón de abajo (un .zip de unos 1,8 GB, para Windows).</li>
+    <li><b>Descomprímelo</b> en la carpeta que quieras.</li>
+    <li><b>Abre</b> «Renegade Millennials.exe».</li>
+    <li><b>Escribe tu clave</b> cuando te la pida. Necesitas internet la primera vez. Una clave vale para 2 ordenadores.</li>
+  </ol>
+  <ol class="lang-en">
+    <li><b>Download</b> the game with the button below (a .zip of about 1.8 GB, for Windows).</li>
+    <li><b>Unzip</b> it anywhere you like.</li>
+    <li><b>Open</b> "Renegade Millennials.exe".</li>
+    <li><b>Type your key</b> when asked. You need internet the first time. One key works on 2 computers.</li>
+  </ol>
+  <div class="acciones">
+    <a class="btn pri" id="descarga" href="#" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg><span class="lang-es">Descargar el juego</span><span class="lang-en">Download the game</span></a>
+    <a class="btn sec" href="./"><span class="lang-es">← Volver</span><span class="lang-en">← Back</span></a>
+  </div>
+  <p class="nota" id="pronto" hidden><span class="lang-es">La descarga estará aquí muy pronto. Mientras, escríbenos por el <a href="https://discord.gg/g4Sj4rXXuJ" target="_blank" rel="noopener">Discord</a> y te pasamos el enlace.</span><span class="lang-en">The download will be here very soon. Meanwhile, message us on <a href="https://discord.gg/g4Sj4rXXuJ" target="_blank" rel="noopener">Discord</a> and we'll send you the link.</span></p>
+  <p class="nota"><span class="lang-es">¿Lo compraste en itch.io? Entonces también puedes descargarlo desde tu compra en <a href="https://renegademillennials.itch.io/renegade-millennials" target="_blank" rel="noopener">itch.io</a>.</span><span class="lang-en">Bought it on itch.io? You can also download it from your purchase on <a href="https://renegademillennials.itch.io/renegade-millennials" target="_blank" rel="noopener">itch.io</a>.</span></p>
+</main>
+<script>
+(function () {
+  /* Dónde está el .zip del juego completo para quien ya tiene clave. Vacío = el botón sale apagado con el aviso «muy pronto». */
+  var DESCARGA_URL = "";
+  var b = document.getElementById("descarga");
+  if (DESCARGA_URL) { b.href = DESCARGA_URL; b.removeAttribute("aria-disabled"); }
+  else { document.getElementById("pronto").hidden = false; }
+
+  var saved = null;
+  try { saved = localStorage.getItem("trm-lang"); } catch (e) {}
+  function idiomaNavegador() {      /* el idioma del navegador: el primero de sus idiomas preferidos que sea español o inglés; si ninguno, inglés */
+    var ls = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || navigator.userLanguage || ""];
+    for (var i = 0; i < ls.length; i++) {
+      var l = String(ls[i] || "").toLowerCase();
+      if (l.indexOf("es") === 0) return "es";
+      if (l.indexOf("en") === 0) return "en";
+    }
+    return "en";
+  }
+  function setLang(l, guardar) {      /* solo se recuerda lo que elige el visitante con ES / EN */
+    document.body.className = l; document.documentElement.lang = l;
+    document.title = (l === "es" ? "Descargar el juego" : "Download the game") + " — Renegade Millennials";
+    var bs = document.querySelectorAll(".lang button");
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i].getAttribute("data-lang") === l ? "true" : "false");
+    if (guardar) { try { localStorage.setItem("trm-lang", l); } catch (e) {} }
+  }
+  setLang(saved || idiomaNavegador());
+  var bs = document.querySelectorAll(".lang button");
+  for (var i = 0; i < bs.length; i++) bs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang"), true); });
+})();
+</script>
+</body>
+</html>

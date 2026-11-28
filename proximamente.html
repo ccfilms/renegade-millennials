@@ -53,16 +53,25 @@ p{margin:0 auto;max-width:480px;color:var(--mut)}
 (function () {
   var saved = null;
   try { saved = localStorage.getItem("trm-lang"); } catch (e) {}
-  function setLang(l) {
+  function idiomaNavegador() {      /* el idioma del navegador: el primero de sus idiomas preferidos que sea español o inglés; si ninguno, inglés */
+    var ls = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || navigator.userLanguage || ""];
+    for (var i = 0; i < ls.length; i++) {
+      var l = String(ls[i] || "").toLowerCase();
+      if (l.indexOf("es") === 0) return "es";
+      if (l.indexOf("en") === 0) return "en";
+    }
+    return "en";
+  }
+  function setLang(l, guardar) {      /* solo se recuerda lo que elige el visitante con ES / EN */
     document.body.className = l; document.documentElement.lang = l;
     document.title = (l === "es" ? "Próximamente" : "Coming soon") + " — Renegade Millennials";
     var bs = document.querySelectorAll(".lang button");
     for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i].getAttribute("data-lang") === l ? "true" : "false");
-    try { localStorage.setItem("trm-lang", l); } catch (e) {}
+    if (guardar) { try { localStorage.setItem("trm-lang", l); } catch (e) {} }
   }
-  setLang(saved || ((navigator.language || "es").toLowerCase().indexOf("es") === 0 ? "es" : "en"));
+  setLang(saved || idiomaNavegador());
   var bs = document.querySelectorAll(".lang button");
-  for (var i = 0; i < bs.length; i++) bs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang")); });
+  for (var i = 0; i < bs.length; i++) bs[i].addEventListener("click", function () { setLang(this.getAttribute("data-lang"), true); });
 })();
 </script>
 </body>
